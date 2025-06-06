@@ -1,0 +1,12 @@
+asgiref>=3.7.0
+django>=4.2.0
+pip
+sqlparse
+tzdata
+gunicorn
+boto3
+psycopg2-binary
+django-storages
+loguru
+pytest
+pytest-django

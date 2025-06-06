@@ -1,0 +1,48 @@
+version: 1.0
+runtime: python311
+
+build:
+  commands:
+    build:
+      - pip3 install uv
+      - uv venv .venv
+      - uv pip install -r requirements.txt
+
+run:
+  runtime-version: 3.11
+  command: bash scripts/start.sh
+  network:
+    port: 8080
+    env: PORT
+  env:
+    - name: DEBUG
+      value: "True" #atención con esto!
+    - name: DB_HOST
+      value: "database-free-tier.cccpxuiv6n1v.us-east-1.rds.amazonaws.com"
+    - name: DB_PORT
+      value: "5432"
+    - name: DB_NAME
+      value: "djdb"
+    - name: AWS_STORAGE_BUCKET_NAME
+      value: "alvs-virginia-s3"
+    - name: AWS_S3_REGION_NAME
+      value: "us-east-1"
+    - name: AWS_S3_CUSTOM_DOMAIN
+      value: "d2g4tf0q5e3v42.cloudfront.net"
+    - name: AWS_S3_OBJECT_PARAMETERS
+      value: '{"CacheControl": "max-age=86400"}'
+  secrets:
+    - name: DJANGO_SUPERUSER_USERNAME
+      value-from: "arn:aws:secretsmanager:us-east-1:789650504128:secret:django-secret-3cNpZN:DJANGO_SUPERUSER_USERNAME::"
+    - name: DJANGO_SUPERUSER_EMAIL
+      value-from: "arn:aws:secretsmanager:us-east-1:789650504128:secret:django-secret-3cNpZN:DJANGO_SUPERUSER_EMAIL::"
+    - name: DJANGO_SUPERUSER_PASSWORD
+      value-from: "arn:aws:secretsmanager:us-east-1:789650504128:secret:django-secret-3cNpZN:DJANGO_SUPERUSER_PASSWORD::"
+    - name: SECRET_KEY
+      value-from: "arn:aws:secretsmanager:us-east-1:789650504128:secret:django-secret-3cNpZN:SECRET_KEY::"
+    - name: DB_USERNAME
+      value-from: "arn:aws:secretsmanager:us-east-1:789650504128:secret:rds!db-b2e1ff83-1545-4806-bd37-df9fd2a3de95:username::"
+    - name: DB_PASSWORD
+      value-from: "arn:aws:secretsmanager:us-east-1:789650504128:secret:rds!db-b2e1ff83-1545-4806-bd37-df9fd2a3de95:password::"
+    - name: PING
+      value-from: "arn:aws:secretsmanager:us-east-1:789650504128:secret:pingping/secret-VcQsw5"
