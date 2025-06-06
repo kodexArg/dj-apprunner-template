@@ -47,7 +47,7 @@ db.sqlite3
 .DS_Store
 
 # Archivo .cursor
-.cursor/
+# .cursor/
 
 # Node.js
 node_modules/

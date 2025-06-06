@@ -4,6 +4,10 @@ import json
 from loguru import logger
 import sys
 from datetime import datetime
+from dotenv import load_dotenv
+
+# Cargar variables de entorno desde .env
+load_dotenv(override=True)
 
 # Configuración de Loguru
 LOGURU_CONFIG = {
@@ -12,16 +16,19 @@ LOGURU_CONFIG = {
             "sink": sys.stdout,
             "format": "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
             "level": "INFO",
-        },
-        {
-            "sink": f"s3://{os.environ['AWS_STORAGE_BUCKET_NAME']}/logs/app_{datetime.now().strftime('%Y-%m-%d')}.log",
-            "format": "{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function}:{line} - {message}",
-            "level": "DEBUG",
-            "rotation": "1 day",
-            "retention": "30 days",
         }
     ]
 }
+
+# En producción, agregar el handler de S3
+if not os.environ.get('IS_LOCAL') == 'True':
+    LOGURU_CONFIG["handlers"].append({
+        "sink": f"s3://{os.environ['AWS_STORAGE_BUCKET_NAME']}/logs/app_{datetime.now().strftime('%Y-%m-%d')}.log",
+        "format": "{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function}:{line} - {message}",
+        "level": "DEBUG",
+        "rotation": "1 day",
+        "retention": "30 days",
+    })
 
 # Configurar Loguru
 logger.configure(**LOGURU_CONFIG)
@@ -37,7 +44,9 @@ ALLOWED_HOSTS = [
     '*.apprunner.aws',
     '*.awsapprunner.com',
     f'*.{os.environ["AWS_S3_REGION_NAME"]}.awsapprunner.com',
-    'csjqtfjiu7.us-east-1.awsapprunner.com'  # Dominio específico como respaldo
+    'csjqtfjiu7.us-east-1.awsapprunner.com',  # Dominio específico como respaldo
+    'localhost',
+    '127.0.0.1'
 ]
 
 CSRF_TRUSTED_ORIGINS = [  # Dominios permitidos para peticiones POST con token CSRF
@@ -81,7 +90,7 @@ ROOT_URLCONF = 'project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -138,7 +147,7 @@ AWS_STORAGE_BUCKET_NAME = os.environ['AWS_STORAGE_BUCKET_NAME']
 AWS_S3_REGION_NAME = os.environ['AWS_S3_REGION_NAME']
 AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
-AWS_S3_CUSTOM_DOMAIN = os.environ.get('AWS_S3_CUSTOM_DOMAIN')
+AWS_S3_CUSTOM_DOMAIN = os.environ['AWS_S3_CUSTOM_DOMAIN']
 AWS_S3_OBJECT_PARAMETERS = json.loads(os.environ.get('AWS_S3_OBJECT_PARAMETERS', '{"CacheControl": "max-age=86400"}'))
 AWS_S3_SIGNATURE_VERSION = 's3v4'
 AWS_S3_VERIFY = True

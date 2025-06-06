@@ -92,6 +92,35 @@ Se requieren los siguientes secretos en AWS Secrets Manager:
 4. Configurar las variables de entorno en `apprunner.yaml`
 5. Desplegar en AWS App Runner
 
+## 🧪 Pruebas Actuales
+
+```
+1. Configuración (tests/test_config.py)
+   ├── test_secret_key
+   ├── test_database_config
+   ├── test_aws_config
+   ├── test_security_settings
+   ├── test_installed_apps
+   └── test_middleware
+
+2. Modelos (core/tests/test_models.py)
+   ├── test_create_user
+   ├── test_create_superuser
+   └── test_user_str_representation
+
+3. Vistas (core/tests/test_views.py)
+   ├── test_hello_world
+   ├── test_health_check
+   ├── test_db_health_check_success
+   └── test_db_health_check_failure
+
+4. Integración (tests/test_startup.py)
+   ├── test_environment_configuration
+   ├── test_database_integration
+   ├── test_aws_integration
+   └── test_security_integration
+```
+
 ## Licencia
 
 Este proyecto está licenciado bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.

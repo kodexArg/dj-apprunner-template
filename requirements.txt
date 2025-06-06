@@ -1,5 +1,5 @@
-asgiref>=3.7.0
-django>=4.2.0
+asgiref
+django
 pip
 sqlparse
 tzdata
@@ -10,3 +10,4 @@ django-storages
 loguru
 pytest
 pytest-django
+python-dotenv
