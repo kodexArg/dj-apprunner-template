@@ -1,6 +1,6 @@
-# AppRunner Test 2
+# dj-apprunner-template
 
-Proyecto de prueba para AWS App Runner con Python 3.11 (sin Docker/ECS).
+Template en construcción para proyectos Django en AWS App Runner, incluyendo integración con RDS (PostgreSQL) y S3 con CloudFront.
 
 ## 📋 Estado del Proyecto
 
@@ -9,17 +9,25 @@ Proyecto de prueba para AWS App Runner con Python 3.11 (sin Docker/ECS).
 - Variables de entorno y secretos
 - Gunicorn como servidor WSGI
 - Gestión de dependencias con uv
+- Configuración de IAM roles y políticas
+- Secrets Manager configurado
 
 ### Servicios AWS ✅
-- Secrets Manager
-- RDS (PostgreSQL)
-- S3 + CloudFront
+- Secrets Manager con secretos configurados
+- RDS (PostgreSQL) con acceso configurado
+- S3 + CloudFront con políticas de acceso
+- IAM roles y políticas necesarias
 
-### Pendiente 🚧
-- Sistema de autenticación
-- API REST con JWT
-- Frontend moderno (Vite + Tailwind + HTMX)
-- Entorno de desarrollo local
+### Próximos Pasos 🚧
+1. Configuración del Frontend
+   - Instalación de django-vite
+   - Configuración de Tailwind CSS
+   - Integración de HTMX
+2. Sistema de Autenticación
+   - Implementación de autenticación Django
+3. API REST
+   - Desarrollo de endpoints
+   - Implementación de seguridad JWT
 
 ## 📝 Stack Tecnológico
 
@@ -28,6 +36,61 @@ Proyecto de prueba para AWS App Runner con Python 3.11 (sin Docker/ECS).
 - **Almacenamiento**: S3 + CloudFront
 - **Despliegue**: AWS App Runner
 - **Frontend**: Vite, Tailwind, HTMX, Django Components
+
+## 🔧 Configuración Requerida
+
+### IAM Roles y Políticas
+
+El proyecto utiliza el rol de instancia `kdx-django-apprunner-instance-role` con las siguientes políticas:
+- `kdx-AlvsVirginiaS3AccessPolicy`
+- `kdx-django-apprunner-required-secrets`
+- `kdx-Rds-db-free-tier-policy`
+
+### Secrets Manager
+
+Se requieren los siguientes secretos en AWS Secrets Manager:
+
+1. `django-secret-3cNpZN`:
+   - DJANGO_SUPERUSER_USERNAME
+   - DJANGO_SUPERUSER_EMAIL
+   - DJANGO_SUPERUSER_PASSWORD
+   - SECRET_KEY
+
+2. `rds!db-b2e1ff83-1545-4806-bd37-df9fd2a3de95`:
+   - username
+   - password
+
+3. `pingping/secret-VcQsw5`:
+   - PING (valor de prueba que devuelve "PONG")
+
+### Política de Acceso a Secrets
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "secretsmanager:GetSecretValue"
+            ],
+            "Resource": [
+                "arn:aws:secretsmanager:us-east-1:789650504128:secret:rds!db-b2e1ff83-1545-4806-bd37-df9fd2a3de95-SR96y6",
+                "arn:aws:secretsmanager:us-east-1:789650504128:secret:django-secret-3cNpZN",
+                "arn:aws:secretsmanager:us-east-1:789650504128:secret:pingping/secret-VcQsw5"
+            ]
+        }
+    ]
+}
+```
+
+## 📦 Instalación
+
+1. Clonar el repositorio
+2. Configurar los secretos en AWS Secrets Manager según la estructura descrita
+3. Asegurar que el rol de instancia tenga las políticas necesarias
+4. Configurar las variables de entorno en `apprunner.yaml`
+5. Desplegar en AWS App Runner
 
 ## Licencia
 
