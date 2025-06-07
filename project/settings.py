@@ -153,13 +153,17 @@ AWS_S3_SIGNATURE_VERSION = 's3v4'
 AWS_S3_VERIFY = True
 
 # Static & Media Files
+VITE_ASSETS_PATH = BASE_DIR / "static" / "dist"
+
 STATICFILES_DIRS = [
-    BASE_DIR / "static/dist",
+    VITE_ASSETS_PATH,
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 DJANGO_VITE = {
     "default": {
-        "manifest_path": BASE_DIR / "static/dist/.vite/manifest.json",
+        "dev_mode": DEBUG,
+        "manifest_path": VITE_ASSETS_PATH / "manifest.json",
     }
 }
 

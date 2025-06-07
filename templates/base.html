@@ -6,12 +6,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Mi Sitio{% endblock %}</title>
-    {% vite_asset 'frontend/main.css' %}
+    {% vite_hmr_client %}
+    {% vite_asset 'frontend/main.js' %}
 </head>
 <body>
     <div id="app">
         {% block content %}{% endblock %}
     </div>
-    {% vite_asset 'frontend/main.js' %}
 </body>
 </html> 
