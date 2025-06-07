@@ -11,3 +11,4 @@ loguru
 pytest
 pytest-django
 python-dotenv
+django-vite
