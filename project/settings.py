@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_vite',
     'storages',
     'core',
 ]
@@ -151,19 +152,21 @@ AWS_S3_OBJECT_PARAMETERS = json.loads(os.environ.get('AWS_S3_OBJECT_PARAMETERS',
 AWS_S3_SIGNATURE_VERSION = 's3v4'
 AWS_S3_VERIFY = True
 
-# Configuración de archivos estáticos y multimedia
-# Esta configuración cambia dependiendo de si la aplicación se ejecuta localmente (IS_LOCAL=True)
-# o en producción. En local, se usan los directorios del sistema de ficheros.
-# En producción, se utiliza un bucket de S3.
+# Static & Media Files
+STATICFILES_DIRS = [
+    BASE_DIR / "static/dist",
+]
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+DJANGO_VITE = {
+    "default": {
+        "manifest_path": BASE_DIR / "static/dist/.vite/manifest.json",
+    }
+}
+
 if IS_LOCAL:
-    # Configuración para desarrollo local
     STATIC_URL = '/static/'
-    STATICFILES_DIRS = [BASE_DIR / 'static']
-    STATIC_ROOT = BASE_DIR / 'staticfiles'
-    
     MEDIA_URL = '/media/'
     MEDIA_ROOT = BASE_DIR / 'mediafiles'
-    
     STORAGES = {
         "default": {
             "BACKEND": "django.core.files.storage.FileSystemStorage",
@@ -172,13 +175,9 @@ if IS_LOCAL:
             "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
         },
     }
-    logger.info("✅ Entorno local detectado. Sirviendo ficheros estáticos y multimedia localmente.")
-
 else:
-    # Configuración para producción (S3)
     if not all([AWS_STORAGE_BUCKET_NAME, AWS_S3_REGION_NAME, AWS_S3_CUSTOM_DOMAIN]):
-        logger.warning("⚠️  Configuración de S3 incompleta. Los ficheros estáticos y multimedia no funcionarán correctamente.")
-
+        logger.warning("S3 settings are incomplete.")
     STORAGES = {
         "default": {
             "BACKEND": "storages.backends.s3.S3Storage",
@@ -202,6 +201,5 @@ else:
     STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
     MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
 
-
-# Configuración del Test Runner
+# Test Runner
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'

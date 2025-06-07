@@ -1,34 +1,17 @@
+{% load django_vite %}
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Mi Sitio{% endblock %}</title>
-    {% block styles %}{% endblock %}
+    {% vite_asset 'frontend/main.css' %}
 </head>
 <body>
-    <header>
-        {% block header %}
-        {% endblock %}
-    </header>
-
-    <nav>
-        {% block navbar %}
-        {% include 'navbar.html' %}
-        {% endblock %}
-    </nav>
-
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
-
-    <footer>
-        {% block footer %}
-        {% endblock %}
-    </footer>
-
-    {% block scripts %}
-    {% endblock %}
+    <div id="app">
+        {% block content %}{% endblock %}
+    </div>
+    {% vite_asset 'frontend/main.js' %}
 </body>
 </html> 
