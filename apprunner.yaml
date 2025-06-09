@@ -7,7 +7,9 @@ build:
       - pip3 install uv
       - uv venv .venv
       - uv pip install -r requirements.txt
-      - npm install
+      - node --version
+      - npm --version
+      - npm ci
       - npm run build
 
 run:
