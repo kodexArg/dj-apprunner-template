@@ -2,23 +2,6 @@
 
 set -e  # Stop script if any error occurs
 
-echo "Installing frontend dependencies and building assets..."
-if ! command -v nvm &> /dev/null
-then
-    echo "NVM not found, installing..."
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-fi
-
-nvm install 20
-nvm use 20
-npm install
-npm run build
-
-echo "Frontend build complete."
-
 echo "Running Django migrations..."
 .venv/bin/python manage.py makemigrations
 .venv/bin/python manage.py migrate
