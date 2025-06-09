@@ -36,39 +36,23 @@ fi
 
 echo "Running tests in order..."
 
-echo "1. Running configuration tests..."
-.venv/bin/python manage.py test tests.test_config --verbosity 2
+echo "1. Running project tests..."
+.venv/bin/python manage.py test tests --verbosity 2
 if [ $? -ne 0 ]; then
-    echo "Configuration tests failed. Aborting deployment."
+    echo "Project tests failed. Aborting deployment."
     exit 1
 fi
-echo "Configuration tests passed."
+echo "Project tests passed."
 
-echo "2. Running startup tests..."
-.venv/bin/python manage.py test tests.test_startup --verbosity 2
-if [ $? -ne 0 ]; then
-    echo "Startup tests failed. Aborting deployment."
-    exit 1
-fi
-echo "Startup tests passed."
-
-echo "3. Running integration tests..."
-.venv/bin/python manage.py test tests.test_integration --verbosity 2
-if [ $? -ne 0 ]; then
-    echo "Integration tests failed. Aborting deployment."
-    exit 1
-fi
-echo "Integration tests passed."
-
-echo "4. Running application tests..."
-echo "4.1. Running core.views tests..."
+echo "2. Running application tests..."
+echo "2.1. Running core.views tests..."
 .venv/bin/python manage.py test core.tests.test_views --verbosity 2
 if [ $? -ne 0 ]; then
     echo "core.views tests failed. Aborting deployment."
     exit 1
 fi
 
-echo "4.2. Running core.models tests..."
+echo "2.2. Running core.models tests..."
 .venv/bin/python manage.py test core.tests.test_models --verbosity 2
 if [ $? -ne 0 ]; then
     echo "core.models tests failed. Aborting deployment."
