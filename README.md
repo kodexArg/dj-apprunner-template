@@ -20,9 +20,10 @@ Template en construcción para proyectos Django en AWS App Runner, incluyendo in
 
 ### Próximos Pasos 🚧
 1. Configuración del Frontend
-   - Instalación de django-vite
-   - Configuración de Tailwind CSS
-   - Integración de HTMX
+   - [x] Instalación de django-vite
+   - [x] Integración de favicon con Vite y verificación visual desde el home
+   - [ ] Configuración de Tailwind CSS
+   - [ ] Integración de HTMX
 2. Sistema de Autenticación
    - Implementación de autenticación Django
 3. API REST
@@ -120,6 +121,8 @@ Se requieren los siguientes secretos en AWS Secrets Manager:
    ├── test_aws_integration
    └── test_security_integration
 ```
+
+> **NOTA:** El home (`/`) ahora muestra un recuadro de prueba y el favicon generado por Vite, confirmando que la integración de django-vite funciona correctamente. Si ves el favicon azul con la letra 'V' y el recuadro animado, la configuración es exitosa.
 
 ## Licencia
 
