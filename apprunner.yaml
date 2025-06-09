@@ -7,10 +7,6 @@ build:
       - pip3 install uv
       - uv venv .venv
       - uv pip install -r requirements.txt
-      - which node
-      - which npm
-      - npm ci --no-audit --no-fund
-      - npm run build
 
 run:
   runtime-version: 3.11
