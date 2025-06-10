@@ -162,7 +162,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 DJANGO_VITE = {
     "default": {
-        "dev_mode": DEBUG,
+        "dev_mode": IS_LOCAL,  # Solo modo desarrollo cuando está ejecutándose localmente
         "manifest_path": VITE_ASSETS_PATH / "manifest.json",
     }
 }
