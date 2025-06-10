@@ -9,8 +9,8 @@ export NODE_VERSION=20.13.1
 export NODE_DIST=node-v$NODE_VERSION-linux-x64
 export NODE_PATH=$PWD/.node
 
-echo "Instalando tar..."
-sudo yum install -y tar
+echo "Instalando dependencias del sistema..."
+sudo yum install -y tar xz
 
 echo "Descargando Node.js..."
 curl -fsSL https://nodejs.org/dist/v$NODE_VERSION/$NODE_DIST.tar.xz -o $NODE_DIST.tar.xz
