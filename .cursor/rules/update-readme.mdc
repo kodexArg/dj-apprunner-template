@@ -8,6 +8,8 @@ alwaysApply: true
 ## Regla Principal
 @README.md DEBE mantenerse sincronizado con el estado actual del proyecto. Cursor DEBE verificar y sugerir actualizaciones al README.md cuando detecte cambios en el proyecto.
 
+Además, [home.html](mdc:templates/core/home.html) de core tiene la misma información de este README.md y debes también actualizarlo cuando corresponda.
+
 ## Eventos que Disparan Actualizaciones
 1. **Cambios en Archivos de Configuración**
    - Al modificar `apprunner.yaml` → Actualizar sección "Notas" y "Orden de Implementación"

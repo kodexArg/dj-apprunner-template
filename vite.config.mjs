@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
-import tailwindcss from '@tailwindcss/vite';
+import tailwindcss from 'tailwindcss';
 
 export default defineConfig({
   base: '/static/',

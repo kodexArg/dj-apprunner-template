@@ -7,6 +7,8 @@ alwaysApply: true
 
 Estás en entorno local trabajando en PowerShell de Windows; no uses comandos de bash linux directamente en la terminal.
 
+Sólo en caso de necesidad debes ejecutar `npm run build` y otros comandos de terminal. Evítalos cuando pueda. No inicies por ejemplo el servidor de desarrollo, eso lo decidirá el usuario.
+
 Este proyecto corre en producción en AppRunner de AWS, y se sube cuando es pusheado a 'main' (CI/CD funcionando). No utiliza Docker ni ECS, en cambio usa [apprunner.yaml](mdc:apprunner.yaml)
 
 Las variables en AWS las encuentras en [apprunner.yaml](mdc:apprunner.yaml) y las variables de entorno local siempre debes mostrarla en code snippet, no leerlas directamente, y esta es la versión que debes utilizar cuando requieras consultarlas:
@@ -36,6 +38,10 @@ AWS_S3_OBJECT_PARAMETERS={"CacheControl": "max-age=86400"}
 DJANGO_SUPERUSER_USERNAME=admin
 DJANGO_SUPERUSER_EMAIL=admin@example.com
 DJANGO_SUPERUSER_PASSWORD=admin
+
+
+
+
 
 
 
