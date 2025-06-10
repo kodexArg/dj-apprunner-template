@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
-import tailwindcss from 'tailwindcss';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   base: '/static/',
@@ -15,7 +15,9 @@ export default defineConfig({
     },
   },
   plugins: [
-    tailwindcss(),
+    tailwindcss({
+      config: './tailwind.config.js'
+    }),
     
     // vite-plugin-static-copy: Copia archivos estáticos durante el build
     // 
