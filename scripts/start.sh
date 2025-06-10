@@ -2,7 +2,6 @@
 
 set -e  # Stop script if any error occurs
 
-<<<<<<< HEAD
 echo "--- STARTING FRONTEND BUILD PROCESS ---"
 echo "Verifying npm installation..."
 npm --version
@@ -13,59 +12,6 @@ npm run build --prefix frontend
 echo "--- FRONTEND BUILD PROCESS COMPLETE ---"
 
 echo "Running Django migrations..."
-=======
-banner() {
-  echo ""
-  echo "==================================================="
-  echo "$1"
-  echo "==================================================="
-  echo ""
-}
-
-banner "[NODE] INICIO DE INSTALACIÓN Y BUILD DE FRONTEND"
-
-banner "[NODE] Instalando Node.js 20.x..."
-export NODE_VERSION=20.13.1
-export NODE_DIST=node-v$NODE_VERSION-linux-x64
-export NODE_PATH=$PWD/.node
-if [ ! -d "$NODE_PATH" ]; then
-  mkdir -p "$NODE_PATH"
-  curl -fsSL https://nodejs.org/dist/v$NODE_VERSION/$NODE_DIST.tar.xz -o $NODE_DIST.tar.xz
-  tar -xf $NODE_DIST.tar.xz -C "$NODE_PATH" --strip-components=1
-  rm $NODE_DIST.tar.xz
-fi
-export PATH="$NODE_PATH/bin:$PATH"
-echo "[NODE] Node.js versión: $(node -v)"
-echo "[NODE] npm versión: $(npm -v)"
-
-banner "[NODE] Instalando dependencias npm..."
-if npm ci; then
-  echo "[NODE] Dependencias instaladas con npm ci."
-else
-  echo "[NODE] npm ci falló, intentando con npm install..."
-  if npm install; then
-    echo "[NODE] Dependencias instaladas con npm install."
-  else
-    echo "[NODE][ERROR] Falló la instalación de dependencias npm. Abortando."
-    exit 1
-  fi
-fi
-
-banner "[NODE] Ejecutando build de Vite..."
-if npm run build; then
-  echo "[NODE] Build de Vite completado con éxito."
-else
-  echo "[NODE][ERROR] Falló el build de Vite. Abortando."
-  exit 1
-fi
-
-echo "[NODE] Archivos generados en static/dist:"
-ls -l static/dist || echo "[NODE] No se encontró static/dist"
-
-banner "[NODE] FIN DE BLOQUE NODE/VITE"
-
-banner "[DJANGO] Migraciones de base de datos"
->>>>>>> ef5303d
 .venv/bin/python manage.py makemigrations
 .venv/bin/python manage.py migrate
 
