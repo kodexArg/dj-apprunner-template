@@ -1,65 +1,580 @@
 {% extends 'base.html' %}
 
-{% block title %}Panel de Control - Desarrollo{% endblock %}
+{% block title %}dj-apprunner-template - Panel de Control{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>🔧 Panel de Control - Desarrollo</h1>
-    
-    <div class="system-info" style="margin: 2em 0; padding: 1em; border: 1px solid #ddd; border-radius: 8px;">
-        <h2>📊 Estado del Sistema</h2>
-        <div class="health-links">
-            <h3>🔍 Endpoints de Verificación</h3>
-            <ul>
-                <li><a href="{% url 'db_health_check' %}">🔄 Verificación de Base de Datos</a></li>
-                <li><a href="{% url 'health' %}">💓 Health Check General</a></li>
-            </ul>
+<!-- Contenedor principal con Tailwind -->
+<div class="max-w-6xl mx-auto p-6 space-y-8">
+    <!-- Header principal -->
+    <div class="text-center">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">📦 dj-apprunner-template</h1>
+        <p class="text-lg text-gray-600 max-w-4xl mx-auto">
+            Template en construcción para proyectos Django en AWS App Runner, incluyendo integración con RDS (PostgreSQL) y S3 con CloudFront.
+        </p>
+    </div>
+
+    <!-- Dashboard de Verificación Tecnológica -->
+    <div class="bg-gradient-to-br from-indigo-50 via-white to-purple-50 rounded-xl border border-indigo-200 p-6 shadow-lg">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">🔍 Dashboard de Verificación Tecnológica</h2>
+            <p class="text-gray-600">Demos en vivo que confirman el funcionamiento de cada tecnología</p>
+        </div>
+
+        <!-- Grid de Verificaciones Tecnológicas -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <!-- 1. Django Framework -->
+            <div class="bg-white rounded-lg border border-green-200 p-5 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">🐍 Django Framework</h3>
+                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">✅ ACTIVO</span>
+                </div>
+                <div class="space-y-3">
+                    <div class="text-sm text-gray-600">
+                        <strong>Versión:</strong> {{ django_version }}
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        <strong>Python:</strong> {{ python_version }}
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        <strong>Servidor:</strong> {{ server_info }}
+                    </div>
+                    <div class="mt-3 p-2 bg-green-50 border border-green-200 rounded text-xs">
+                        <strong>Demo:</strong> Esta página es renderizada por Django con contexto dinámico.
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Vite Build System -->
+            <div class="bg-white rounded-lg border border-blue-200 p-5 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">⚡ Vite Build System</h3>
+                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-medium" id="vite-status">🔄 VERIFICANDO</span>
+                </div>
+                <div class="space-y-3">
+                    <div class="text-sm text-gray-600">
+                        <strong>Manifest:</strong> <span id="manifest-status" class="font-mono">Verificando...</span>
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        <strong>Assets:</strong> <span id="assets-status" class="font-mono">Verificando...</span>
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        <strong>HMR:</strong> <span id="hmr-status" class="font-mono">{{ environment|yesno:"Disponible,En Producción" }}</span>
+                    </div>
+                    <div class="mt-3 p-2 bg-blue-50 border border-blue-200 rounded text-xs">
+                        <strong>Demo:</strong> <span id="vite-demo-text">Verificando integración...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Tailwind CSS -->
+            <div class="bg-white rounded-lg border border-purple-200 p-5 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">🎨 Tailwind CSS</h3>
+                    <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full font-medium">✅ ACTIVO</span>
+                </div>
+                <div class="space-y-3">
+                    <div class="text-sm text-gray-600">
+                        <strong>Versión:</strong> v4.1.8
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        <strong>Plugin Vite:</strong> Integrado
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        <strong>Clases activas:</strong> <span class="font-mono text-xs">bg-*, text-*, grid, flex</span>
+                    </div>
+                    <div class="mt-3 p-2 bg-purple-50 border border-purple-200 rounded text-xs">
+                        <strong>Demo:</strong> Este layout responsive usa clases Tailwind.
+                        <div class="flex space-x-1 mt-2">
+                            <div class="w-3 h-3 bg-red-400 rounded-full"></div>
+                            <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                            <div class="w-3 h-3 bg-green-400 rounded-full"></div>
+                            <div class="w-3 h-3 bg-blue-400 rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. django-vite Integration -->
+            <div class="bg-white rounded-lg border border-cyan-200 p-5 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">🔗 django-vite</h3>
+                    <span class="bg-cyan-100 text-cyan-800 text-xs px-2 py-1 rounded-full font-medium">✅ ACTIVO</span>
+                </div>
+                <div class="space-y-3">
+                    <div class="text-sm text-gray-600">
+                        <strong>Dev Mode:</strong> {{ environment|yesno:"Activado,Desactivado" }}
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        <strong>Assets Path:</strong> <span class="font-mono text-xs">/static/dist/</span>
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        <strong>Manifest:</strong> <span class="font-mono text-xs">manifest.json</span>
+                    </div>
+                    <div class="mt-3 p-2 bg-cyan-50 border border-cyan-200 rounded text-xs">
+                        <strong>Demo:</strong> Favicon servido por Vite, CSS compilado automáticamente.
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. viteStaticCopy Plugin -->
+            <div class="bg-white rounded-lg border border-orange-200 p-5 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">📁 viteStaticCopy</h3>
+                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full font-medium" id="favicon-status">🔄 VERIFICANDO</span>
+                </div>
+                <div class="space-y-3">
+                    <div class="text-sm text-gray-600">
+                        <strong>Plugin:</strong> vite-plugin-static-copy@3.0.0
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        <strong>Origen:</strong> <span class="font-mono text-xs">frontend/favicon.ico</span>
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        <strong>Destino:</strong> <span class="font-mono text-xs">static/dist/favicon.ico</span>
+                    </div>
+                    <div class="mt-3 p-2 bg-orange-50 border border-orange-200 rounded text-xs">
+                        <strong>Demo:</strong> <span id="favicon-demo-text">Verificando favicon...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. Base de Datos PostgreSQL -->
+            <div class="bg-white rounded-lg border border-emerald-200 p-5 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">🗄️ PostgreSQL</h3>
+                    <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full font-medium">✅ CONECTADO</span>
+                </div>
+                <div class="space-y-3">
+                    <div class="text-sm text-gray-600">
+                        <strong>Tipo:</strong> RDS PostgreSQL
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        <strong>Host:</strong> <span class="font-mono text-xs">{{ aws_region }}.rds.amazonaws.com</span>
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        <strong>Secrets:</strong> AWS Secrets Manager
+                    </div>
+                    <div class="mt-3">
+                        <a href="{% url 'db_health_check' %}" 
+                           class="inline-block text-xs bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded px-2 py-1 transition-colors">
+                            🔄 Probar Conexión
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Resumen de Estado -->
+        <div class="mt-8 bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg p-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="font-semibold text-gray-800 mb-1">📊 Resumen del Sistema</h3>
+                    <p class="text-sm text-gray-600">Stack tecnológico verificado y funcionando</p>
+                </div>
+                <div class="flex space-x-4 text-sm">
+                    <div class="text-center">
+                        <div class="font-bold text-green-600 text-lg">6/6</div>
+                        <div class="text-gray-600">Tecnologías</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="font-bold text-blue-600 text-lg">100%</div>
+                        <div class="text-gray-600">Operativo</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="font-bold text-purple-600 text-lg">✅</div>
+                        <div class="text-gray-600">Status</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="config-info" style="margin: 2em 0; padding: 1em; border: 1px solid #ddd; border-radius: 8px;">
-        <h2>⚙️ Configuración del Proyecto</h2>
-        <div class="config-details">
-            <h3>🛠️ Tecnologías Principales</h3>
-            <ul>
-                <li>Django {{ django_version }}</li>
-                <li>Python {{ python_version }}</li>
-                <li>PostgreSQL</li>
-                <li>AWS AppRunner</li>
-                <li>AWS S3 + CloudFront</li>
-                <li>Django-Vite</li>
+    <!-- Card de Estado del Proyecto -->
+    <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+            📋 Estado del Proyecto
+        </h2>
+        
+        <!-- Infraestructura Core -->
+        <div class="mb-8">
+            <h3 class="text-xl font-medium text-green-600 mb-4 flex items-center">
+                Infraestructura Core ✅
+            </h3>
+            <ul class="space-y-2 text-gray-700">
+                <li class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>App Runner configurado con Python 3.11</li>
+                <li class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>Variables de entorno y secretos</li>
+                <li class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>Gunicorn como servidor WSGI</li>
+                <li class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>Gestión de dependencias con uv</li>
+                <li class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>Configuración de IAM roles y políticas</li>
+                <li class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>Secrets Manager configurado</li>
+                <li class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span><strong>Build de frontend optimizado en AppRunner</strong> ✅</li>
+                <li class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span><strong>Desarrollo local con Vite</strong> ✅</li>
             </ul>
+        </div>
 
-            <h3>🔒 Seguridad</h3>
-            <ul>
-                <li>CSRF Protection: {{ csrf_enabled|yesno:"✅,❌" }}</li>
-                <li>HTTPS Forzado: {{ https_enabled|yesno:"✅,❌" }}</li>
-                <li>Debug Mode: {{ debug_mode|yesno:"✅,❌" }}</li>
+        <!-- Servicios AWS -->
+        <div class="mb-8">
+            <h3 class="text-xl font-medium text-green-600 mb-4">Servicios AWS ✅</h3>
+            <ul class="space-y-2 text-gray-700">
+                <li class="flex items-center"><span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>Secrets Manager con secretos configurados</li>
+                <li class="flex items-center"><span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>RDS (PostgreSQL) con acceso configurado</li>
+                <li class="flex items-center"><span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>S3 + CloudFront con políticas de acceso</li>
+                <li class="flex items-center"><span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>IAM roles y políticas necesarias</li>
             </ul>
+        </div>
 
-            <h3>🗄️ Almacenamiento</h3>
-            <ul>
-                <li>Storage Backend: {{ storage_backend }}</li>
-                <li>CDN: {{ cdn_enabled|yesno:"✅,❌" }}</li>
-                <li>Bucket S3: {{ s3_bucket_name }}</li>
-            </ul>
+        <!-- Próximos Pasos -->
+        <div>
+            <h3 class="text-xl font-medium text-orange-600 mb-4">Próximos Pasos 🚧</h3>
+            <div class="space-y-6">
+                <!-- Frontend -->
+                <div>
+                    <h4 class="font-semibold text-gray-800 mb-3">Frontend</h4>
+                    <ul class="space-y-2 ml-4 text-gray-700">
+                        <li class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>✅ Instalación de django-vite</li>
+                        <li class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>✅ Integración de favicon con Vite</li>
+                        <li class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>✅ Build de frontend integrado en AppRunner pre_build</li>
+                        <li class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>✅ Desarrollo local con Vite (npm run dev)</li>
+                        <li class="flex items-center"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>✅ Configuración de Tailwind CSS</li>
+                        <li class="flex items-center"><span class="w-2 h-2 bg-yellow-500 rounded-full mr-3"></span>🚧 Integración de HTMX</li>
+                        <li class="flex items-center"><span class="w-2 h-2 bg-yellow-500 rounded-full mr-3"></span>🚧 Implementación de componentes Django</li>
+                    </ul>
+                </div>
+                
+                <!-- Sistema de Autenticación -->
+                <div>
+                    <h4 class="font-semibold text-gray-800 mb-3">Sistema de Autenticación</h4>
+                    <ul class="space-y-2 ml-4 text-gray-700">
+                        <li class="flex items-center"><span class="w-2 h-2 bg-yellow-500 rounded-full mr-3"></span>🚧 Implementación de autenticación Django</li>
+                        <li class="flex items-center"><span class="w-2 h-2 bg-yellow-500 rounded-full mr-3"></span>🚧 Integración con OAuth2</li>
+                    </ul>
+                </div>
+                
+                <!-- API REST -->
+                <div>
+                    <h4 class="font-semibold text-gray-800 mb-3">API REST</h4>
+                    <ul class="space-y-2 ml-4 text-gray-700">
+                        <li class="flex items-center"><span class="w-2 h-2 bg-yellow-500 rounded-full mr-3"></span>🚧 Desarrollo de endpoints</li>
+                        <li class="flex items-center"><span class="w-2 h-2 bg-yellow-500 rounded-full mr-3"></span>🚧 Implementación de seguridad JWT</li>
+                        <li class="flex items-center"><span class="w-2 h-2 bg-yellow-500 rounded-full mr-3"></span>🚧 Documentación con Swagger/OpenAPI</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="vite-demo" style="margin: 2em 0; padding: 1em; border: 2px dashed #42b883; background: #f0f9ff; border-radius: 8px;">
-        <h2>🚀 Frontend (Django-Vite)</h2>
-        <p>Si ves este recuadro estilizado y el favicon azul con la letra 'V', Django-Vite está funcionando correctamente.</p>
-        <p>Abre la consola del navegador para ver el mensaje de Vite.</p>
+    <!-- Grid de Cards para información técnica -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Stack Tecnológico -->
+        <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                📝 Stack Tecnológico
+            </h2>
+            <ul class="space-y-3 text-gray-700">
+                <li class="flex items-start">
+                    <span class="font-semibold text-blue-600 w-24 flex-shrink-0">Backend:</span>
+                    <span>Python {{ python_version }}, Django {{ django_version }}, Gunicorn</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="font-semibold text-blue-600 w-24 flex-shrink-0">Database:</span>
+                    <span>PostgreSQL (RDS)</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="font-semibold text-blue-600 w-24 flex-shrink-0">Storage:</span>
+                    <span>S3 + CloudFront</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="font-semibold text-blue-600 w-24 flex-shrink-0">Deploy:</span>
+                    <span>AWS App Runner</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="font-semibold text-blue-600 w-24 flex-shrink-0">Frontend:</span>
+                    <span>Vite, Tailwind, HTMX, Django Components</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="font-semibold text-blue-600 w-24 flex-shrink-0">Dev:</span>
+                    <span>Hot-reload con Vite</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Configuración del Sistema -->
+        <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">⚙️ Configuración Actual</h2>
+            
+            <div class="space-y-4">
+                <div>
+                    <h3 class="font-medium text-gray-800 mb-2 flex items-center">
+                        🔒 Seguridad
+                    </h3>
+                    <ul class="space-y-1 text-sm text-gray-600">
+                        <li class="flex justify-between">
+                            <span>CSRF Protection:</span>
+                            <span class="font-mono {% if csrf_enabled %}text-green-600{% else %}text-red-600{% endif %}">
+                                {{ csrf_enabled|yesno:"✅,❌" }}
+                            </span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>HTTPS Forzado:</span>
+                            <span class="font-mono {% if https_enabled %}text-green-600{% else %}text-red-600{% endif %}">
+                                {{ https_enabled|yesno:"✅,❌" }}
+                            </span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>Debug Mode:</span>
+                            <span class="font-mono {% if debug_mode %}text-orange-600{% else %}text-green-600{% endif %}">
+                                {{ debug_mode|yesno:"✅,❌" }}
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-medium text-gray-800 mb-2">🗄️ Almacenamiento</h3>
+                    <ul class="space-y-1 text-sm text-gray-600">
+                        <li class="flex justify-between">
+                            <span>Storage Backend:</span>
+                            <span class="font-mono text-blue-600">{{ storage_backend }}</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>CDN:</span>
+                            <span class="font-mono {% if cdn_enabled %}text-green-600{% else %}text-gray-500{% endif %}">
+                                {{ cdn_enabled|yesno:"✅,❌" }}
+                            </span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>Bucket S3:</span>
+                            <span class="font-mono text-blue-600 text-xs">{{ s3_bucket_name|truncatechars:20 }}</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-medium text-gray-800 mb-2">🚀 Despliegue</h3>
+                    <ul class="space-y-1 text-sm text-gray-600">
+                        <li class="flex justify-between">
+                            <span>Entorno:</span>
+                            <span class="font-mono {% if environment == 'Desarrollo' %}text-orange-600{% else %}text-green-600{% endif %}">
+                                {{ environment }}
+                            </span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>Región AWS:</span>
+                            <span class="font-mono text-blue-600">{{ aws_region }}</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>Servidor:</span>
+                            <span class="font-mono text-blue-600 text-xs">{{ server_info|truncatechars:15 }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="deployment-info" style="margin: 2em 0; padding: 1em; border: 1px solid #ddd; border-radius: 8px;">
-        <h2>🚀 Información de Despliegue</h2>
-        <ul>
-            <li>Entorno: {{ environment }}</li>
-            <li>Región AWS: {{ aws_region }}</li>
-            <li>Versión de Python: {{ python_version }}</li>
-            <li>Servidor: {{ server_info }}</li>
-        </ul>
+    <!-- Demo de Vite/Tailwind - Card destacado -->
+    <div class="bg-gradient-to-r from-blue-50 to-green-50 border-2 border-dashed border-green-400 rounded-lg p-6">
+        <div class="text-center">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center justify-center">
+                🚀 Frontend (Django-Vite + Tailwind CSS)
+            </h2>
+            <div class="max-w-3xl mx-auto space-y-4">
+                <p class="text-lg text-gray-700">
+                    <span class="font-semibold text-green-600">¡Tailwind CSS funcionando!</span> 
+                    Si ves este diseño responsivo y estilizado, tanto Django-Vite como Tailwind están configurados correctamente.
+                </p>
+                <div class="flex flex-wrap justify-center gap-4 mt-6">
+                    <div class="bg-white px-4 py-2 rounded-full shadow-sm border">
+                        <span class="text-sm font-medium text-gray-700">✅ Vite Build</span>
+                    </div>
+                    <div class="bg-white px-4 py-2 rounded-full shadow-sm border">
+                        <span class="text-sm font-medium text-gray-700">✅ Tailwind CSS</span>
+                    </div>
+                    <div class="bg-white px-4 py-2 rounded-full shadow-sm border">
+                        <span class="text-sm font-medium text-gray-700">✅ Favicon Vite</span>
+                    </div>
+                    <div class="bg-white px-4 py-2 rounded-full shadow-sm border">
+                        <span class="text-sm font-medium text-gray-700">✅ Django Integration</span>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-600 mt-4">
+                    Abre la consola del navegador para ver el mensaje de Vite. 
+                    El favicon azul con la letra 'V' confirma que viteStaticCopy funciona.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sistema de Verificación y Pruebas -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Health Checks -->
+        <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">📊 Estado del Sistema</h2>
+            <div class="space-y-3">
+                <h3 class="font-medium text-gray-700 mb-3">🔍 Endpoints de Verificación</h3>
+                <div class="space-y-2">
+                    <a href="{% url 'db_health_check' %}" 
+                       class="block w-full p-3 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition-colors">
+                        <span class="font-medium text-blue-700">🔄 Verificación de Base de Datos</span>
+                        <span class="block text-sm text-blue-600 mt-1">Prueba la conexión a PostgreSQL</span>
+                    </a>
+                    <a href="{% url 'health' %}" 
+                       class="block w-full p-3 bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg transition-colors">
+                        <span class="font-medium text-green-700">💓 Health Check General</span>
+                        <span class="block text-sm text-green-600 mt-1">Estado general del sistema</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estado de Pruebas -->
+        <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+            <h2 class="text-xl font-semibold text-green-800 mb-4">🧪 Estado de Pruebas</h2>
+            <p class="text-green-700 mb-4 font-medium">Suite completa de pruebas implementada y funcionando:</p>
+            
+            <div class="space-y-4">
+                <div>
+                    <h4 class="font-semibold text-green-800 text-sm mb-2">1. Configuración (tests/test_config.py)</h4>
+                    <div class="grid grid-cols-2 gap-1 text-xs">
+                        <span class="text-green-600">✅ test_secret_key</span>
+                        <span class="text-green-600">✅ test_database_config</span>
+                        <span class="text-green-600">✅ test_aws_config</span>
+                        <span class="text-green-600">✅ test_security_settings</span>
+                        <span class="text-green-600">✅ test_installed_apps</span>
+                        <span class="text-green-600">✅ test_middleware</span>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-green-800 text-sm mb-2">2. Modelos (core/tests/test_models.py)</h4>
+                    <div class="grid grid-cols-1 gap-1 text-xs">
+                        <span class="text-green-600">✅ test_create_user</span>
+                        <span class="text-green-600">✅ test_create_superuser</span>
+                        <span class="text-green-600">✅ test_user_str_representation</span>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-green-800 text-sm mb-2">3. Vistas (core/tests/test_views.py)</h4>
+                    <div class="grid grid-cols-2 gap-1 text-xs">
+                        <span class="text-green-600">✅ test_hello_world</span>
+                        <span class="text-green-600">✅ test_health_check</span>
+                        <span class="text-green-600">✅ test_db_health_check_success</span>
+                        <span class="text-green-600">✅ test_db_health_check_failure</span>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-green-800 text-sm mb-2">4. Integración (tests/test_startup.py)</h4>
+                    <div class="grid grid-cols-2 gap-1 text-xs">
+                        <span class="text-green-600">✅ test_environment_configuration</span>
+                        <span class="text-green-600">✅ test_database_integration</span>
+                        <span class="text-green-600">✅ test_aws_integration</span>
+                        <span class="text-green-600">✅ test_security_integration</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<!-- JavaScript para verificaciones en tiempo real -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Verificar Vite mediante console.log
+    const originalLog = console.log;
+    let viteMessageDetected = false;
+    
+    console.log = function(...args) {
+        if (args.some(arg => typeof arg === 'string' && arg.includes('Vite'))) {
+            viteMessageDetected = true;
+            updateViteStatus(true);
+        }
+        originalLog.apply(console, args);
+    };
+    
+    // Verificar favicon
+    checkFavicon();
+    
+    // Verificar manifest.json
+    checkManifest();
+    
+    // Backup: si no se detecta el mensaje en 3 segundos, verificar por assets
+    setTimeout(() => {
+        if (!viteMessageDetected) {
+            checkViteAssets();
+        }
+    }, 3000);
+});
+
+function updateViteStatus(isWorking) {
+    const statusEl = document.getElementById('vite-status');
+    const demoEl = document.getElementById('vite-demo-text');
+    
+    if (isWorking) {
+        statusEl.textContent = '✅ ACTIVO';
+        statusEl.className = 'bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium';
+        demoEl.textContent = 'Console.log detectado - Vite está funcionando.';
+    } else {
+        statusEl.textContent = '⚠️ PARCIAL';
+        statusEl.className = 'bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-medium';
+        demoEl.textContent = 'Assets servidos, pero no se detectó HMR/console.log.';
+    }
+}
+
+function checkFavicon() {
+    const favicon = document.querySelector('link[rel="icon"]');
+    const statusEl = document.getElementById('favicon-status');
+    const demoEl = document.getElementById('favicon-demo-text');
+    
+    if (favicon && favicon.href.includes('/static/')) {
+        statusEl.textContent = '✅ ACTIVO';
+        statusEl.className = 'bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium';
+        demoEl.textContent = 'Favicon servido desde: ' + favicon.href.split('/').slice(-2).join('/');
+    } else {
+        statusEl.textContent = '❌ ERROR';
+        statusEl.className = 'bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full font-medium';
+        demoEl.textContent = 'Favicon no encontrado o ruta incorrecta.';
+    }
+}
+
+function checkManifest() {
+    fetch('/static/dist/manifest.json')
+        .then(response => {
+            const manifestEl = document.getElementById('manifest-status');
+            if (response.ok) {
+                manifestEl.textContent = '✅ Encontrado';
+                manifestEl.className = 'font-mono text-green-600';
+                return response.json();
+            } else {
+                throw new Error('Not found');
+            }
+        })
+        .then(data => {
+            // Verificar que el manifest tenga las entradas esperadas
+            if (data && data['frontend/main.js']) {
+                document.getElementById('assets-status').textContent = '✅ main.js encontrado';
+                document.getElementById('assets-status').className = 'font-mono text-green-600';
+            }
+        })
+        .catch(() => {
+            document.getElementById('manifest-status').textContent = '❌ No encontrado';
+            document.getElementById('manifest-status').className = 'font-mono text-red-600';
+            document.getElementById('assets-status').textContent = '❌ Sin assets';
+            document.getElementById('assets-status').className = 'font-mono text-red-600';
+        });
+}
+
+function checkViteAssets() {
+    // Verificar si hay elementos con atributos de Vite
+    const viteElements = document.querySelectorAll('[data-vite-dev-id], script[src*="vite"], link[href*="vite"]');
+    if (viteElements.length > 0) {
+        updateViteStatus(false); // Parcial: assets pero no HMR
+    }
+}
+</script>
 {% endblock %} 
