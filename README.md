@@ -11,6 +11,7 @@ Template en construcción para proyectos Django en AWS App Runner, incluyendo in
 - Gestión de dependencias con uv
 - Configuración de IAM roles y políticas
 - Secrets Manager configurado
+- **Build de frontend optimizado en AppRunner** ✅
 
 ### Servicios AWS ✅
 - Secrets Manager con secretos configurados
@@ -22,6 +23,7 @@ Template en construcción para proyectos Django en AWS App Runner, incluyendo in
 1. Configuración del Frontend
    - [x] Instalación de django-vite
    - [x] Integración de favicon con Vite y verificación visual desde el home
+   - [x] **Build de frontend integrado en AppRunner pre_build**
    - [ ] Configuración de Tailwind CSS
    - [ ] Integración de HTMX
 2. Sistema de Autenticación
@@ -38,7 +40,39 @@ Template en construcción para proyectos Django en AWS App Runner, incluyendo in
 - **Despliegue**: AWS App Runner
 - **Frontend**: Vite, Tailwind, HTMX, Django Components
 
-## 🔧 Configuración Requerida
+## 🔧 Proceso de Build Optimizado
+
+### AppRunner Build Process
+El proceso de build se ha optimizado dividiendo las tareas entre las fases de AppRunner:
+
+**Build environment variables** (apprunner.yaml):
+- `NODE_VERSION`: Versión de Node.js (20.13.1)
+- `NODE_DIST`: Distribución de Node.js (node-v20.13.1-linux-x64)
+- `NODE_PATH`: Ruta de instalación de Node.js (/tmp/.node)
+
+**Pre-build phase** (apprunner.yaml):
+- Instalación de herramientas del sistema (tar, xz)
+- Instalación de Node.js usando variables de entorno
+- Instalación de dependencias frontend (`npm install`)
+- Build de assets frontend (`npm run build`)
+
+**Build phase** (apprunner.yaml):
+- Instalación de uv
+- Creación del entorno virtual Python
+- Instalación de dependencias Python
+
+**Runtime phase** (scripts/start.sh):
+- Migraciones de Django
+- Colección de archivos estáticos (`collectstatic`)
+- Verificación/creación de superusuario
+- Ejecución de pruebas
+- Inicio del servidor Gunicorn
+
+> **NOTAS TÉCNICAS:** 
+> - El comando `collectstatic` se mantiene en runtime debido a que requiere acceso a variables de entorno AWS y secretos que no están disponibles durante la fase de build.
+> - Las variables de entorno para Node.js (NODE_VERSION, NODE_DIST, NODE_PATH) se definen en el bloque `build.env` de AppRunner para mayor claridad y mantenibilidad.
+
+### Configuración Requerida
 
 ### IAM Roles y Políticas
 
