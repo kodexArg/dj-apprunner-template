@@ -62,3 +62,8 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Asegurarse de NO ignorar archivos críticos para el build de frontend
+!package.json
+!package-lock.json
+!vite.config.mjs
