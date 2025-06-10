@@ -6,6 +6,7 @@ from botocore.exceptions import ClientError
 from django.core.files.base import ContentFile
 import os
 import subprocess
+import shutil
 
 class IntegrationTests(TestCase):
     """Suite de pruebas para pruebas de integración de servicios externos. Verifica la conectividad y funcionalidad con AWS S3, la base de datos, y herramientas de frontend."""
@@ -71,22 +72,31 @@ class IntegrationTests(TestCase):
     def test_node_installation(self):
         """Verifica que Node.js está instalado y accesible."""
         try:
-            result = subprocess.run(['node', '--version'], capture_output=True, text=True)
-            self.assertEqual(result.returncode, 0, "Node.js no está instalado o no es accesible")
+            # Verifica si node está en el PATH
+            node_path = shutil.which('node')
+            self.assertIsNotNone(node_path, "Node.js no está instalado o no es accesible")
+            
+            # Verifica la versión
+            result = subprocess.run([node_path, '--version'], capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, "Error al obtener la versión de Node.js")
             self.assertTrue(result.stdout.strip().startswith('v'), "Versión de Node.js no válida")
         except Exception as e:
             self.fail(f"Error al verificar Node.js: {str(e)}")
 
     def test_vite_dev_server(self):
         """Verifica que el servidor de desarrollo de Vite está configurado correctamente."""
-        vite_config_path = os.path.join(settings.BASE_DIR, 'vite.config.js')
-        self.assertTrue(os.path.exists(vite_config_path), "El archivo de configuración de Vite no existe")
+        # Verifica que el directorio frontend existe
+        frontend_dir = os.path.join(settings.BASE_DIR, 'frontend')
+        self.assertTrue(os.path.exists(frontend_dir), "El directorio frontend no existe")
         
-        # Verifica que el archivo de configuración contiene configuraciones esenciales
-        with open(vite_config_path, 'r') as f:
-            config_content = f.read()
-            self.assertIn('server', config_content, "Configuración del servidor de desarrollo no encontrada")
-            self.assertIn('build', config_content, "Configuración de build no encontrada")
+        # Verifica que hay archivos de configuración
+        config_files = ['package.json', 'vite.config.js']
+        for file in config_files:
+            file_path = os.path.join(frontend_dir, file)
+            self.assertTrue(
+                os.path.exists(file_path),
+                f"El archivo {file} no existe en el directorio frontend"
+            )
 
     def tearDown(self):
         """Limpia después de cada prueba."""

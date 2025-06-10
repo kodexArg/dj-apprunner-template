@@ -5,6 +5,7 @@ from botocore.exceptions import ClientError
 import time
 from django.db import connection
 from django.db.utils import OperationalError
+from botocore.config import Config
 
 class PerformanceTests(TestCase):
     """Suite de pruebas para verificar el rendimiento y timeouts."""
@@ -33,7 +34,7 @@ class PerformanceTests(TestCase):
             s3_client = boto3.client(
                 's3',
                 region_name=settings.AWS_S3_REGION_NAME,
-                config=boto3.Config(connect_timeout=5, read_timeout=5)
+                config=Config(connect_timeout=5, read_timeout=5)
             )
             
             start_time = time.time()
@@ -50,19 +51,13 @@ class PerformanceTests(TestCase):
 
     def test_database_connection_pool(self):
         """Verifica que el pool de conexiones de la base de datos funciona correctamente."""
-        connections = []
         try:
             # Intenta crear múltiples conexiones
             for _ in range(5):
                 with connection.cursor() as cursor:
                     cursor.execute("SELECT 1")
-                    connections.append(cursor)
-            
-            # Verifica que todas las conexiones funcionan
-            for cursor in connections:
-                cursor.execute("SELECT 1")
-                result = cursor.fetchone()
-                self.assertEqual(result[0], 1)
+                    result = cursor.fetchone()
+                    self.assertEqual(result[0], 1)
         except OperationalError as e:
             self.fail(f"Error en el pool de conexiones: {str(e)}")
 
