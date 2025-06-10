@@ -4,16 +4,11 @@ runtime: python311
 build:
   commands:
     pre-build:
-      # Instalación de dependencias del sistema necesarias para Node.js
-      - yum install -y tar xz
-      # Instalación de Node.js usando variables de entorno
-      - curl -fsSL https://nodejs.org/dist/v$NODE_VERSION/$NODE_DIST.tar.xz -o $NODE_DIST.tar.xz
-      - mkdir -p "$NODE_PATH"
-      - tar -xf $NODE_DIST.tar.xz -C "$NODE_PATH" --strip-components=1
-      - export PATH="$NODE_PATH/bin:$PATH"
-      # Build de frontend
-      - $NODE_PATH/bin/npm install
-      - $NODE_PATH/bin/npm run build
+      # Instalación de dependencias del sistema e instalación completa de Node.js en un comando
+      - yum install -y tar xz && curl -fsSL https://nodejs.org/dist/v$NODE_VERSION/$NODE_DIST.tar.xz -o $NODE_DIST.tar.xz && mkdir -p "$NODE_PATH" && tar -xf $NODE_DIST.tar.xz -C "$NODE_PATH" --strip-components=1
+      # Build de frontend usando rutas absolutas
+      - cd /app && $NODE_PATH/bin/node $NODE_PATH/bin/npm install
+      - cd /app && $NODE_PATH/bin/node $NODE_PATH/bin/npm run build
     build:
       # Instalación de dependencias Python
       - pip3 install uv
