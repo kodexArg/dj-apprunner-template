@@ -38,7 +38,11 @@ banner "ARCHIVOS ESTÁTICOS"
 .venv/bin/python manage.py collectstatic --noinput
 
 banner "VERIFICACIÓN DE SUPERUSUARIO"
-.venv/bin/python manage.py createsuperuser --noinput
+if .venv/bin/python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); print(User.objects.filter(is_superuser=True).exists())" | grep -q "True"; then
+    echo "Superusuario ya existe, omitiendo creación."
+else
+    .venv/bin/python manage.py createsuperuser --noinput
+fi
 
 banner "PRUEBAS"
 .venv/bin/python manage.py test tests --verbosity 2
