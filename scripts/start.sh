@@ -25,8 +25,10 @@ echo "Descomprimiendo Node.js..."
 tar -xf $NODE_DIST.tar.xz -C "$NODE_PATH" --strip-components=1
 export PATH="$NODE_PATH/bin:$PATH"
 
-npm install --prefix frontend
-npm run build --prefix frontend
+echo "Instalando dependencias de frontend..."
+npm install
+echo "Construyendo assets de frontend..."
+npm run build
 
 banner "MIGRACIONES DE DJANGO"
 .venv/bin/python manage.py makemigrations
