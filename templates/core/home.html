@@ -1,20 +1,65 @@
 {% extends 'base.html' %}
 
-{% block title %}Inicio Core{% endblock %}
+{% block title %}Panel de Control - Desarrollo{% endblock %}
 
 {% block content %}
 <div class="container">
-    <h1>Inicio Core (área de pruebas)</h1>
-    <div class="health-links">
-        <h2>Endpoints de Verificación de Estado</h2>
-        <ul>
-            <li><a href="{% url 'db_health_check' %}">Verificación de Base de Datos</a></li>
-        </ul>
+    <h1>🔧 Panel de Control - Desarrollo</h1>
+    
+    <div class="system-info" style="margin: 2em 0; padding: 1em; border: 1px solid #ddd; border-radius: 8px;">
+        <h2>📊 Estado del Sistema</h2>
+        <div class="health-links">
+            <h3>🔍 Endpoints de Verificación</h3>
+            <ul>
+                <li><a href="{% url 'db_health_check' %}">🔄 Verificación de Base de Datos</a></li>
+                <li><a href="{% url 'health' %}">💓 Health Check General</a></li>
+            </ul>
+        </div>
     </div>
-    <div class="vite-demo" style="margin-top:2em;padding:1em;border:2px dashed #42b883;background:#f0f9ff;">
-        <h2>Prueba de Django-Vite</h2>
+
+    <div class="config-info" style="margin: 2em 0; padding: 1em; border: 1px solid #ddd; border-radius: 8px;">
+        <h2>⚙️ Configuración del Proyecto</h2>
+        <div class="config-details">
+            <h3>🛠️ Tecnologías Principales</h3>
+            <ul>
+                <li>Django {{ django_version }}</li>
+                <li>Python {{ python_version }}</li>
+                <li>PostgreSQL</li>
+                <li>AWS AppRunner</li>
+                <li>AWS S3 + CloudFront</li>
+                <li>Django-Vite</li>
+            </ul>
+
+            <h3>🔒 Seguridad</h3>
+            <ul>
+                <li>CSRF Protection: {{ csrf_enabled|yesno:"✅,❌" }}</li>
+                <li>HTTPS Forzado: {{ https_enabled|yesno:"✅,❌" }}</li>
+                <li>Debug Mode: {{ debug_mode|yesno:"✅,❌" }}</li>
+            </ul>
+
+            <h3>🗄️ Almacenamiento</h3>
+            <ul>
+                <li>Storage Backend: {{ storage_backend }}</li>
+                <li>CDN: {{ cdn_enabled|yesno:"✅,❌" }}</li>
+                <li>Bucket S3: {{ s3_bucket_name }}</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="vite-demo" style="margin: 2em 0; padding: 1em; border: 2px dashed #42b883; background: #f0f9ff; border-radius: 8px;">
+        <h2>🚀 Frontend (Django-Vite)</h2>
         <p>Si ves este recuadro estilizado y el favicon azul con la letra 'V', Django-Vite está funcionando correctamente.</p>
         <p>Abre la consola del navegador para ver el mensaje de Vite.</p>
+    </div>
+
+    <div class="deployment-info" style="margin: 2em 0; padding: 1em; border: 1px solid #ddd; border-radius: 8px;">
+        <h2>🚀 Información de Despliegue</h2>
+        <ul>
+            <li>Entorno: {{ environment }}</li>
+            <li>Región AWS: {{ aws_region }}</li>
+            <li>Versión de Python: {{ python_version }}</li>
+            <li>Servidor: {{ server_info }}</li>
+        </ul>
     </div>
 </div>
 {% endblock %} 
