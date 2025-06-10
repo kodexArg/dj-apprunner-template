@@ -2,9 +2,35 @@
 
 set -e  # Stop script if any error occurs
 
-echo "--- STARTING FRONTEND BUILD PROCESS ---"
-echo "Verifying npm installation..."
-npm --version
+echo "$(date '+%m-%d-%Y %H:%M:%S %p') --- STARTING FRONTEND BUILD PROCESS ---"
+echo "$(date '+%m-%d-%Y %H:%M:%S %p') Instalando Node.js 20.x..."
+
+export NODE_VERSION=20.13.1
+export NODE_DIST=node-v$NODE_VERSION-linux-x64
+export NODE_PATH=$PWD/.node
+
+if [ ! -d "$NODE_PATH" ]; then
+  mkdir -p "$NODE_PATH"
+  curl -fsSL https://nodejs.org/dist/v$NODE_VERSION/$NODE_DIST.tar.xz -o $NODE_DIST.tar.xz
+  if ! command -v tar >/dev/null 2>&1; then
+    echo "[ERROR] 'tar' no está disponible en el entorno. Abortando."
+    exit 1
+  fi
+  tar -xf $NODE_DIST.tar.xz -C "$NODE_PATH" --strip-components=1
+  rm $NODE_DIST.tar.xz
+fi
+
+export PATH="$NODE_PATH/bin:$PATH"
+
+echo "$(date '+%m-%d-%Y %H:%M:%S %p') Verificando instalación de npm..."
+if ! command -v npm >/dev/null 2>&1; then
+  echo "$(date '+%m-%d-%Y %H:%M:%S %p') [ERROR] npm no está disponible tras instalar Node.js. Abortando."
+  exit 1
+fi
+
+echo "$(date '+%m-%d-%Y %H:%M:%S %p') npm versión: $(npm -v)"
+echo "$(date '+%m-%d-%Y %H:%M:%S %p') node versión: $(node -v)"
+
 echo "Installing frontend dependencies..."
 npm install --prefix frontend
 echo "Building frontend assets..."
