@@ -12,8 +12,8 @@ build:
       - tar -xf $NODE_DIST.tar.xz -C "$NODE_PATH" --strip-components=1
       - export PATH="$NODE_PATH/bin:$PATH"
       # Build de frontend
-      - npm install
-      - npm run build
+      - $NODE_PATH/bin/npm install
+      - $NODE_PATH/bin/npm run build
     build:
       # Instalación de dependencias Python
       - pip3 install uv
