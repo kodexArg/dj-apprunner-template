@@ -3,7 +3,7 @@ runtime: python311
 
 build:
   commands:
-    pre_build:
+    pre-build:
       # Instalación de dependencias del sistema necesarias para Node.js
       - yum install -y tar xz
       # Instalación de Node.js usando variables de entorno
