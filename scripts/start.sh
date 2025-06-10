@@ -2,6 +2,15 @@
 
 set -e  # Stop script if any error occurs
 
+echo "--- STARTING FRONTEND BUILD PROCESS ---"
+echo "Verifying npm installation..."
+npm --version
+echo "Installing frontend dependencies..."
+npm install --prefix frontend
+echo "Building frontend assets..."
+npm run build --prefix frontend
+echo "--- FRONTEND BUILD PROCESS COMPLETE ---"
+
 echo "Running Django migrations..."
 .venv/bin/python manage.py makemigrations
 .venv/bin/python manage.py migrate

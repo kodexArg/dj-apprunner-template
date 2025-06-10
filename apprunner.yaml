@@ -3,17 +3,14 @@ runtime: python311
 
 build:
   commands:
-    pre-build:
-      # Install a modern version of Node.js
+    build:
+      # Install Node.js so 'npm' is available for the run command (start.sh)
       - curl -sL https://rpm.nodesource.com/setup_18.x | bash -
       - yum install -y nodejs
       # Install Python dependencies
       - pip3 install uv
       - uv venv .venv
       - .venv/bin/uv pip install -r requirements.txt
-    build:
-      - npm install --prefix frontend
-      - npm run build --prefix frontend
 
 run:
   runtime-version: 3.11
