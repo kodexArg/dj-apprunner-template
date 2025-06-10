@@ -3,10 +3,15 @@ runtime: python311
 
 build:
   commands:
-    build:
+    pre-build:
       - pip3 install uv
       - uv venv .venv
+      - source .venv/bin/activate
       - uv pip install -r requirements.txt
+    build:
+      - npm install --prefix frontend
+      - npm run build --prefix frontend
+      - python manage.py collectstatic --noinput
 
 run:
   runtime-version: 3.11
@@ -16,7 +21,9 @@ run:
     env: PORT
   env:
     - name: DEBUG
-      value: "True" #atención con esto!
+      value: "False"
+    - name: IS_LOCAL
+      value: "False"
     - name: DB_HOST
       value: "database-free-tier.cccpxuiv6n1v.us-east-1.rds.amazonaws.com"
     - name: DB_PORT
