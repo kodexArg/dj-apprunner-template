@@ -1,4 +1,5 @@
 {% load django_vite %}
+{% load django_htmx %}
 
 <!DOCTYPE html>
 <html lang="es">
@@ -9,8 +10,9 @@
     <link rel="icon" type="image/x-icon" href="{% load static %}{% static 'dist/favicon.ico' %}">
     {% vite_hmr_client %}
     {% vite_asset 'frontend/main.js' %}
+    {% htmx_script %}
 </head>
-<body>
+<body hx-headers='{"x-csrftoken": "{{ csrf_token }}"}'>
     <div id="app">
         {% block content %}{% endblock %}
     </div>

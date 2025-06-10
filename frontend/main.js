@@ -1,10 +1,12 @@
 import './styles.css'
-import 'htmx.org'
+import htmx from 'htmx.org'
 
 // Configuración de HTMX
 htmx.config.defaultSwapStyle = 'outerHTML'
 htmx.config.globalViewTransitions = true
-htmx.config.headers['X-CSRFToken'] = document.querySelector('[name=csrfmiddlewaretoken]').value
+
+// El token CSRF se maneja a través del template tag {% htmx_script %}
+// y el atributo hx-headers en el body
 
 // Evento para confirmar que HTMX está cargado
 document.addEventListener('DOMContentLoaded', function() {

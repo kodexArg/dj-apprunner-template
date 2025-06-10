@@ -20,19 +20,20 @@ Template en construcción para proyectos Django en AWS App Runner, incluyendo in
 - S3 + CloudFront con políticas de acceso
 - IAM roles y políticas necesarias
 
+### Frontend ✅
+- [x] Instalación de django-vite
+- [x] Integración de favicon con Vite
+- [x] Build de frontend integrado en AppRunner pre_build
+- [x] Desarrollo local con Vite (npm run dev)
+- [x] Configuración de Tailwind CSS v4
+- [x] Integración de HTMX
+- [ ] Implementación de componentes Django
+
 ### Próximos Pasos 🚧
-1. Frontend
-   - [x] Instalación de django-vite
-   - [x] Integración de favicon con Vite
-   - [x] Build de frontend integrado en AppRunner pre_build
-   - [x] Desarrollo local con Vite (npm run dev)
-   - [x] Configuración de Tailwind CSS
-   - [ ] Integración de HTMX
-   - [ ] Implementación de componentes Django
-2. Sistema de Autenticación
+1. Sistema de Autenticación
    - [ ] Implementación de autenticación Django
    - [ ] Integración con OAuth2
-3. API REST
+2. API REST
    - [ ] Desarrollo de endpoints
    - [ ] Implementación de seguridad JWT
    - [ ] Documentación con Swagger/OpenAPI
@@ -43,7 +44,7 @@ Template en construcción para proyectos Django en AWS App Runner, incluyendo in
 - **Base de datos**: PostgreSQL (RDS)
 - **Almacenamiento**: S3 + CloudFront
 - **Despliegue**: AWS App Runner
-- **Frontend**: Vite, Tailwind, HTMX, Django Components
+- **Frontend**: Vite, Tailwind v4, HTMX, Django Components
 - **Desarrollo**: Hot-reload con Vite
 
 ## 🔧 Proceso de Build y Desarrollo
@@ -152,9 +153,12 @@ Se requieren los siguientes secretos en AWS Secrets Manager:
 4. Configurar las variables de entorno en `apprunner.yaml`
 5. Desplegar en AWS App Runner
 
-## 🧪 Pruebas Actuales
+## 🧪 Pruebas
 
-```
+<details>
+<summary>Ver Tests</summary>
+
+<pre>
 1. Configuración (tests/test_config.py)
    ├── test_secret_key
    ├── test_database_config
@@ -179,7 +183,8 @@ Se requieren los siguientes secretos en AWS Secrets Manager:
    ├── test_database_integration
    ├── test_aws_integration
    └── test_security_integration
-```
+</pre>
+</details>
 
 > **NOTA:** El home (`/`) ahora incluye un Dashboard de Verificación Tecnológica que muestra en tiempo real el estado de cada tecnología del stack. Si ves las 6 tecnologías marcadas como activas (Django, Vite, Tailwind, django-vite, viteStaticCopy, PostgreSQL), la configuración es exitosa.
 
