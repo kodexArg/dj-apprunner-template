@@ -9,6 +9,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: 'frontend/main.js',
+        favicon: 'frontend/favicon.ico',
       },
     },
   },
