@@ -12,6 +12,7 @@ Template en construcción para proyectos Django en AWS App Runner, incluyendo in
 - Configuración de IAM roles y políticas
 - Secrets Manager configurado
 - **Build de frontend optimizado en AppRunner** ✅
+- **Desarrollo local con Vite** ✅
 
 ### Servicios AWS ✅
 - Secrets Manager con secretos configurados
@@ -20,17 +21,21 @@ Template en construcción para proyectos Django en AWS App Runner, incluyendo in
 - IAM roles y políticas necesarias
 
 ### Próximos Pasos 🚧
-1. Configuración del Frontend
+1. Frontend
    - [x] Instalación de django-vite
-   - [x] Integración de favicon con Vite y verificación visual desde el home
-   - [x] **Build de frontend integrado en AppRunner pre_build**
+   - [x] Integración de favicon con Vite
+   - [x] Build de frontend integrado en AppRunner pre_build
+   - [x] Desarrollo local con Vite (npm run dev)
    - [ ] Configuración de Tailwind CSS
    - [ ] Integración de HTMX
+   - [ ] Implementación de componentes Django
 2. Sistema de Autenticación
-   - Implementación de autenticación Django
+   - [ ] Implementación de autenticación Django
+   - [ ] Integración con OAuth2
 3. API REST
-   - Desarrollo de endpoints
-   - Implementación de seguridad JWT
+   - [ ] Desarrollo de endpoints
+   - [ ] Implementación de seguridad JWT
+   - [ ] Documentación con Swagger/OpenAPI
 
 ## 📝 Stack Tecnológico
 
@@ -39,8 +44,27 @@ Template en construcción para proyectos Django en AWS App Runner, incluyendo in
 - **Almacenamiento**: S3 + CloudFront
 - **Despliegue**: AWS App Runner
 - **Frontend**: Vite, Tailwind, HTMX, Django Components
+- **Desarrollo**: Hot-reload con Vite
 
-## 🔧 Proceso de Build Optimizado
+## 🔧 Proceso de Build y Desarrollo
+
+### Desarrollo Local
+1. Instalar dependencias:
+```bash
+uv venv
+source .venv/bin/activate  # o .venv\Scripts\activate en Windows
+uv pip install -r requirements.txt
+npm install
+```
+
+2. Iniciar servidor de desarrollo:
+```bash
+# Terminal 1: Backend Django
+python manage.py runserver
+
+# Terminal 2: Frontend Vite
+npm run dev
+```
 
 ### AppRunner Build Process
 El proceso de build se ha optimizado dividiendo las tareas entre las fases de AppRunner:
@@ -71,6 +95,7 @@ El proceso de build se ha optimizado dividiendo las tareas entre las fases de Ap
 > **NOTAS TÉCNICAS:** 
 > - El comando `collectstatic` se mantiene en runtime debido a que requiere acceso a variables de entorno AWS y secretos que no están disponibles durante la fase de build.
 > - Las variables de entorno para Node.js (NODE_VERSION, NODE_DIST, NODE_PATH) se definen en el bloque `build.env` de AppRunner para mayor claridad y mantenibilidad.
+> - En desarrollo, Vite proporciona hot-reload para cambios en el frontend mientras Django maneja el backend.
 
 ### Configuración Requerida
 
