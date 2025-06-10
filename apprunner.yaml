@@ -4,16 +4,44 @@ runtime: python311
 build:
   commands:
     pre-build:
-      # Instalación de dependencias del sistema e instalación completa de Node.js en un comando
-      - yum install -y tar xz && curl -fsSL https://nodejs.org/dist/v$NODE_VERSION/$NODE_DIST.tar.xz -o $NODE_DIST.tar.xz && mkdir -p "$NODE_PATH" && tar -xf $NODE_DIST.tar.xz -C "$NODE_PATH" --strip-components=1
-      # Build de frontend usando rutas absolutas
-      - cd /app && $NODE_PATH/bin/node $NODE_PATH/bin/npm install
-      - cd /app && $NODE_PATH/bin/node $NODE_PATH/bin/npm run build
+      # Instalación de dependencias del sistema
+      - echo "=== INSTALANDO DEPENDENCIAS DEL SISTEMA ==="
+      - yum install -y tar xz
+      - echo "=== DEPENDENCIAS DEL SISTEMA INSTALADAS EXITOSAMENTE ==="
+      # Descarga de Node.js
+      - echo "=== DESCARGANDO NODE.JS v$NODE_VERSION ==="
+      - curl -fsSL https://nodejs.org/dist/v$NODE_VERSION/$NODE_DIST.tar.xz -o $NODE_DIST.tar.xz
+      - echo "=== NODE.JS DESCARGADO EXITOSAMENTE ==="
+      # Instalación de Node.js
+      - echo "=== INSTALANDO NODE.JS ==="
+      - mkdir -p "$NODE_PATH"
+      - tar -xf $NODE_DIST.tar.xz -C "$NODE_PATH" --strip-components=1
+      - echo "=== NODE.JS INSTALADO EXITOSAMENTE ==="
+      # Crear symlink para que esbuild pueda encontrar node
+      - echo "=== CONFIGURANDO ENLACES DE NODE.JS ==="
+      - ln -sf $NODE_PATH/bin/node /usr/local/bin/node
+      - ln -sf $NODE_PATH/bin/npm /usr/local/bin/npm
+      - echo "=== ENLACES DE NODE.JS CONFIGURADOS ==="
+      # Verificación de instalación
+      - echo "=== VERIFICANDO INSTALACIÓN ==="
+      - $NODE_PATH/bin/node --version
+      - $NODE_PATH/bin/npm --version
+      - echo "=== VERIFICACIÓN COMPLETADA ==="
+      # Instalación de dependencias frontend
+      - echo "=== INSTALANDO DEPENDENCIAS FRONTEND ==="
+      - $NODE_PATH/bin/npm install
+      - echo "=== DEPENDENCIAS FRONTEND INSTALADAS EXITOSAMENTE ==="
+      # Build de frontend
+      - echo "=== CONSTRUYENDO ASSETS FRONTEND ==="
+      - $NODE_PATH/bin/npm run build
+      - echo "=== ASSETS FRONTEND CONSTRUIDOS EXITOSAMENTE ==="
     build:
       # Instalación de dependencias Python
+      - echo "=== INSTALANDO DEPENDENCIAS PYTHON ==="
       - pip3 install uv
       - uv venv .venv
       - uv pip install -r requirements.txt
+      - echo "=== DEPENDENCIAS PYTHON INSTALADAS EXITOSAMENTE ==="
   env:
     - name: NODE_VERSION
       value: "20.13.1"
