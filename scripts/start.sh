@@ -19,6 +19,9 @@ echo "Instalando tar y xz..."
 sudo yum install -y tar xz
 echo "Descargando Node.js..."
 curl -fsSL https://nodejs.org/dist/v$NODE_VERSION/$NODE_DIST.tar.xz -o $NODE_DIST.tar.xz
+echo "Creando directorio para Node.js..."
+mkdir -p "$NODE_PATH"
+echo "Descomprimiendo Node.js..."
 tar -xf $NODE_DIST.tar.xz -C "$NODE_PATH" --strip-components=1
 export PATH="$NODE_PATH/bin:$PATH"
 
