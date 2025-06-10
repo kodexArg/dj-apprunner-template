@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.conf import settings
+import os
 
 class ConfigTests(TestCase):
     """Suite de pruebas para configuraciones críticas.
@@ -96,6 +97,56 @@ class ConfigTests(TestCase):
         
         for middleware in required_middleware:
             self.assertIn(middleware, settings.MIDDLEWARE)
+
+    def test_vite_config(self):
+        """Verifica que la configuración de Vite está presente y correcta."""
+        # Verifica directorios necesarios
+        required_dirs = [
+            os.path.join(settings.BASE_DIR, 'static'),
+            os.path.join(settings.BASE_DIR, 'static', 'dist'),
+            os.path.join(settings.BASE_DIR, 'frontend'),
+        ]
+        
+        for directory in required_dirs:
+            self.assertTrue(
+                os.path.exists(directory),
+                f"El directorio {directory} no existe"
+            )
+
+        # Verifica archivos de configuración
+        required_files = [
+            'vite.config.js',
+            'package.json',
+            'package-lock.json',
+        ]
+        
+        for file in required_files:
+            file_path = os.path.join(settings.BASE_DIR, file)
+            self.assertTrue(
+                os.path.exists(file_path),
+                f"El archivo {file} no existe"
+            )
+
+        # Verifica archivos de build
+        build_dir = os.path.join(settings.BASE_DIR, 'static', 'dist')
+        build_files = ['index.html', 'assets']
+        for file in build_files:
+            self.assertTrue(
+                os.path.exists(os.path.join(build_dir, file)),
+                f"El archivo {file} no existe en el build de Vite"
+            )
+
+        # Verifica configuración de archivos estáticos
+        self.assertTrue(hasattr(settings, 'STATIC_URL'))
+        self.assertTrue(hasattr(settings, 'STATIC_ROOT'))
+        self.assertTrue(hasattr(settings, 'STATICFILES_DIRS'))
+        
+        # Verifica que STATICFILES_DIRS incluye el directorio de Vite
+        self.assertIn(
+            build_dir,
+            settings.STATICFILES_DIRS,
+            "El directorio de Vite no está en STATICFILES_DIRS"
+        )
 
     def tearDown(self):
         """Limpia después de cada prueba."""

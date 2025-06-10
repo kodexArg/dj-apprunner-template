@@ -4,9 +4,11 @@ from datetime import datetime
 import boto3
 from botocore.exceptions import ClientError
 from django.core.files.base import ContentFile
+import os
+import subprocess
 
 class IntegrationTests(TestCase):
-    """Suite de pruebas para pruebas de integración de servicios externos. Verifica la conectividad y funcionalidad con AWS S3 y la base de datos."""
+    """Suite de pruebas para pruebas de integración de servicios externos. Verifica la conectividad y funcionalidad con AWS S3, la base de datos, y herramientas de frontend."""
 
     @classmethod
     def setUpClass(cls):
@@ -65,6 +67,26 @@ class IntegrationTests(TestCase):
             storage.delete(test_filename)
         except Exception as e:
             self.fail(f"Prueba de almacenamiento de archivos estáticos fallida: {str(e)}")
+
+    def test_node_installation(self):
+        """Verifica que Node.js está instalado y accesible."""
+        try:
+            result = subprocess.run(['node', '--version'], capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, "Node.js no está instalado o no es accesible")
+            self.assertTrue(result.stdout.strip().startswith('v'), "Versión de Node.js no válida")
+        except Exception as e:
+            self.fail(f"Error al verificar Node.js: {str(e)}")
+
+    def test_vite_dev_server(self):
+        """Verifica que el servidor de desarrollo de Vite está configurado correctamente."""
+        vite_config_path = os.path.join(settings.BASE_DIR, 'vite.config.js')
+        self.assertTrue(os.path.exists(vite_config_path), "El archivo de configuración de Vite no existe")
+        
+        # Verifica que el archivo de configuración contiene configuraciones esenciales
+        with open(vite_config_path, 'r') as f:
+            config_content = f.read()
+            self.assertIn('server', config_content, "Configuración del servidor de desarrollo no encontrada")
+            self.assertIn('build', config_content, "Configuración de build no encontrada")
 
     def tearDown(self):
         """Limpia después de cada prueba."""
