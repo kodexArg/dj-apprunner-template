@@ -1,0 +1,132 @@
+---
+description: 
+globs: *.html
+alwaysApply: false
+---
+# Uso correcto de componentes con django-components
+
+Este es un ejemplo de uso correcto:
+
+Componente sin contenido interno (self-closing)
+
+```
+{% component "nombre" prop1="valor" prop2="valor" / %}
+```
+(observa cómo el componente se cierra con un '/')
+
+Componente con contenido interno (bloque)
+```
+{% component "nombre" prop1="valor" %}
+    {# contenido, slots, etc. #}
+{% endcomponent %}
+```
+
+Los componentes en este proyecto siempre van en la carpeta /components, directamente en el root, y ordenadas en la carpeta de su aplicación. Por ejemplo el componente calendar de core se ubica en /components/core.
+
+Veamos ejemplos más genéricos del mismo calendar con este html:
+
+/components/{app}/calendar/calendar.html
+```
+<div class="calendar">
+  Today's date is <span>{{ date }}</span>
+</div>
+```
+
+/components/{app}/calendar/calendar.py
+```
+from django_components import Component
+
+class Calendar(Component):
+    template_file = "calendar.html"
+```
+
+O una combinación de Django template, Python, CSS, and Javascript:
+
+/components/{app}/calendar/calendar.html
+```
+<div class="calendar">
+  Today's date is <span>{{ date }}</span>
+</div>
+```
+
+/components/{app}/calendar/calendar.css
+```
+.calendar {
+  width: 200px;
+  background: pink;
+}
+```
+
+/components/{app}/calendar/calendar.js
+```
+document.querySelector(".calendar").onclick = () => {
+  alert("Clicked calendar!");
+};
+```
+
+/components/{app}/calendar/calendar.py
+```
+from django_components import Component
+
+class Calendar(Component):
+    template_file = "calendar.html"
+    js_file = "calendar.js"
+    css_file = "calendar.css"
+
+    def get_template_data(self, args, kwargs, slots, context):
+        return {"date": kwargs["date"]}
+```
+
+Usar el coponente así:
+
+```
+{% component "calendar" date="2024-11-06" %}{% endcomponent %}
+```
+o
+```
+```
+
+Y se renderiza así:
+
+```
+<div class="calendar-component">
+  Today's date is <span>2024-11-06</span>
+</div>
+
+# Reglas para django-components
+
+## Sintaxis estricta para componentes
+
+- Usa siempre el cierre correcto:
+  - Si el componente es de una sola línea (sin slots ni contenido):
+    ```django
+    {% component "nombre" prop1="valor" prop2="valor" / %}
+    ```
+  - Si el componente tiene contenido interno o slots:
+    ```django
+    {% component "nombre" prop1="valor" %}
+        ...contenido o slots...
+    {% endcomponent %}
+    ```
+
+- No omitas el cierre ni uses solo la apertura.
+
+## Ejemplo de integración Svelte
+
+Para montar un componente Svelte equivalente, usa:
+
+```html
+<div data-svelte="nombre_del_componente" data-props='{"prop1": "valor", "prop2": "valor"}'></div>
+```
+
+- El nombre debe coincidir con el archivo Svelte (en snake_case si así es la convención del proyecto).
+- Los props se pasan como JSON en el atributo `data-props`.
+
+---
+Esta regla es obligatoria para todos los templates y componentes del proyecto.
+
+
+
+
+
+

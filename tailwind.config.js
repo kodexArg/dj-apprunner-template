@@ -1,8 +1,9 @@
 /** @type {import('@tailwindcss/vite').Config} */
 export default {
   content: [
-    "./frontend/**/*.{js,ts,jsx,tsx,html}",
-    "./templates/**/*.html"
+    "./templates/**/*.{html,py,svelte}",
+    "./components/**/*.{html,py,svelte,js}",
+    "./frontend/**/*.{html,js,svelte}",
   ],
   theme: {
     extend: {},

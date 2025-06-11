@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_components',
     'django_vite',
     'django_htmx',
     'storages',
@@ -94,7 +95,10 @@ ROOT_URLCONF = 'project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [
+            BASE_DIR / 'components',
+            BASE_DIR / 'templates',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -209,3 +213,9 @@ else:
 
 # Test Runner
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
+DJANGO_COMPONENTS = {
+    "components": [
+        str(BASE_DIR / "components"),
+    ]
+}

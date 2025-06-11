@@ -1,6 +1,13 @@
 # dj-apprunner-template
 
-Template en construcción para proyectos Django en AWS App Runner, incluyendo integración con RDS (PostgreSQL) y S3 con CloudFront.
+Template para proyectos Django en AWS App Runner, incluyendo integración con RDS (PostgreSQL) y S3 con CloudFront.
+
+Incluye:
+- Django 5
+- Vite + django-vite
+- Tailwind CSS v4
+- HTMX + django-htmx
+
 
 ## 📋 Estado del Proyecto
 
@@ -28,6 +35,8 @@ Template en construcción para proyectos Django en AWS App Runner, incluyendo in
 - [x] Configuración de Tailwind CSS v4
 - [x] Integración de HTMX
 - [ ] Implementación de componentes Django
+
+> **Nota Técnica:** El stack frontend está diseñado para ser completamente autónomo en producción. Todos los assets (JS, CSS, imágenes) se sirven desde S3/CloudFront, sin dependencias de CDNs externos. HTMX, Vite, Tailwind y django-components funcionan 100% offline una vez desplegados.
 
 ### Próximos Pasos 🚧
 1. Sistema de Autenticación
