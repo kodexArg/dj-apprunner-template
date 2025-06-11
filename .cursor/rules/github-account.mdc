@@ -1,7 +1,7 @@
 ---
-description: 
+description: github, commit, repository, repositorio
 globs: 
-alwaysApply: true
+alwaysApply: false
 ---
 # Project Repository Information
 

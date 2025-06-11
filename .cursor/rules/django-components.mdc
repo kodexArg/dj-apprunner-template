@@ -1,132 +1,182 @@
 ---
-description: 
-globs: *.html
+description: componente, component, widget, reutilizable, partial, bloque, módulo
+globs: 
 alwaysApply: false
 ---
-# Uso correcto de componentes con django-components
+# Guía para Componentes django-components
 
-Este es un ejemplo de uso correcto:
+Este documento establece las convenciones y mejores prácticas para crear y utilizar componentes con `django-components`. Su seguimiento es **obligatorio**.
 
-Componente sin contenido interno (self-closing)
+## Principios Fundamentales
 
+1. **Ubicación de todos los componentes** Los componentes siempre se ubican en la carpeta (root)/components, nunca dentro de la carpeta de aplicación.
+2. **Path preciso** Los componentes para todo este proyecto se ubican en la carpeta (root)/components/global/ y los componentes de cada aplicación dentro de su propia carpeta (root)/components/{app}/*
+3.  **Auto-descubrimiento:** Los componentes **NO** se registran manualmente con `@register`. El sistema los descubre automáticamente gracias a la configuración en `settings.py`.
+4.  **Convención de Nomenclatura:** La ruta del archivo determina el nombre del componente. La ruta `components/core/calendar` se convierte en el nombre de componente `core_calendar`.
+5.  **Estructura Encapsulada:** Cada componente debe residir en su propio directorio para encapsular su plantilla, lógica, estilos y scripts.
+
+---
+
+## 1. Estructura de Archivos (La Regla de Oro)
+
+**Estructura Canónica:**
 ```
-{% component "nombre" prop1="valor" prop2="valor" / %}
-```
-(observa cómo el componente se cierra con un '/')
-
-Componente con contenido interno (bloque)
-```
-{% component "nombre" prop1="valor" %}
-    {# contenido, slots, etc. #}
-{% endcomponent %}
+/components/
+└── {nombre_de_la_app}/
+    └── {nombre_del_componente}/
+        ├── {nombre_del_componente}.html (Obligatorio)
+        ├── {nombre_del_componente}.py (Opcional, para la lógica)
+        ├── {nombre_del_componente}.css (Opcional, para estilos)
+        └── {nombre_del_componente}.js (Opcional, para scripts)
 ```
 
-Los componentes en este proyecto siempre van en la carpeta /components, directamente en el root, y ordenadas en la carpeta de su aplicación. Por ejemplo el componente calendar de core se ubica en /components/core.
-
-Veamos ejemplos más genéricos del mismo calendar con este html:
-
-/components/{app}/calendar/calendar.html
+**Ejemplo Práctico (`core/calendar`):**
 ```
-<div class="calendar">
-  Today's date is <span>{{ date }}</span>
+/components/
+└── core/
+    └── calendar/
+        ├── calendar.html
+        └── calendar.py
+```
+
+-   **Nombre para usar en plantilla:** `core_calendar`
+
+---
+
+## 2. Creación de un Componente
+
+### a) La Plantilla (`.html`) - Lo Mínimo Requerido
+El archivo HTML es el corazón del componente.
+
+`/components/core/calendar/calendar.html`
+```html
+<div class="calendar" id="{{ component.id }}">
+  <h3>Calendario</h3>
+  <p>Fecha de hoy: <span>{{ date }}</span></p>
 </div>
 ```
 
-/components/{app}/calendar/calendar.py
-```
+### b) La Lógica (`.py`) - Para Datos y Comportamiento
+La clase Python se asocia automáticamente a la plantilla si está en el mismo directorio. **No uses `@register`**.
+
+`/components/core/calendar/calendar.py`
+```python
 from django_components import Component
+import datetime
 
 class Calendar(Component):
-    template_file = "calendar.html"
+    def get_context_data(self, date=None):
+        """
+        Define el contexto que se pasará a la plantilla HTML.
+        Los argumentos de esta función son los 'props' que recibe el componente.
+        """
+        return {
+            "date": date or datetime.date.today().isoformat()
+        }
+
+    # Anidar la clase Media para asociar CSS y JS específicos.
+    class Media:
+        css = "core/calendar/calendar.css"
+        js = "core/calendar/calendar.js"
 ```
 
-O una combinación de Django template, Python, CSS, and Javascript:
+---
 
-/components/{app}/calendar/calendar.html
-```
-<div class="calendar">
-  Today's date is <span>{{ date }}</span>
-</div>
-```
+## 3. Uso en Plantillas (Templates)
 
-/components/{app}/calendar/calendar.css
-```
-.calendar {
-  width: 200px;
-  background: pink;
-}
-```
+Para usar un componente, primero carga la librería de tags.
 
-/components/{app}/calendar/calendar.js
-```
-document.querySelector(".calendar").onclick = () => {
-  alert("Clicked calendar!");
-};
-```
+### a) Sintaxis de Invocación
 
-/components/{app}/calendar/calendar.py
-```
-from django_components import Component
+-   **Componente sin contenido interno (Self-Closing):**
+    Observa la barra `/` al final. Se usa cuando no necesitas pasar contenido dentro del bloque.
 
-class Calendar(Component):
-    template_file = "calendar.html"
-    js_file = "calendar.js"
-    css_file = "calendar.css"
-
-    def get_template_data(self, args, kwargs, slots, context):
-        return {"date": kwargs["date"]}
-```
-
-Usar el coponente así:
-
-```
-{% component "calendar" date="2024-11-06" %}{% endcomponent %}
-```
-o
-```
-```
-
-Y se renderiza así:
-
-```
-<div class="calendar-component">
-  Today's date is <span>2024-11-06</span>
-</div>
-
-# Reglas para django-components
-
-## Sintaxis estricta para componentes
-
-- Usa siempre el cierre correcto:
-  - Si el componente es de una sola línea (sin slots ni contenido):
     ```django
-    {% component "nombre" prop1="valor" prop2="valor" / %}
+    {% load component_tags %}
+
+    {# Llama al componente sin pasarle props (usará el valor por defecto de get_context_data) #}
+    {% component "core_calendar" / %}
+
+    {# Llama al componente pasándole un 'prop' de fecha #}
+    {% component "core_calendar" date="2025-01-31" / %}
     ```
-  - Si el componente tiene contenido interno o slots:
+
+-   **Componente con contenido interno (Bloque con `slots`):**
+    Se usa para construir componentes más complejos que actúan como "contenedores" o "layouts".
+
     ```django
-    {% component "nombre" prop1="valor" %}
-        ...contenido o slots...
+    {% load component_tags %}
+    
+    {% component "card" title="Mi Tarjeta" %}
+        {% fill "header" %}
+            <h1>{{ title }}</h1>
+        {% endfill %}
+
+        <p>Este es el contenido principal de la tarjeta.</p>
     {% endcomponent %}
     ```
 
-- No omitas el cierre ni uses solo la apertura.
+### b) Carga de Dependencias CSS/JS
 
-## Ejemplo de integración Svelte
+Para que los archivos CSS y JS definidos en la clase `Media` del componente se carguen, debes incluir estos tags en tu plantilla base:
 
-Para montar un componente Svelte equivalente, usa:
+```django
+{% load component_tags %}
 
-```html
-<div data-svelte="nombre_del_componente" data-props='{"prop1": "valor", "prop2": "valor"}'></div>
+<html>
+<head>
+    ...
+    {% component_css_dependencies %} {# <- Para el CSS, usualmente en el <head> #}
+</head>
+<body>
+    ...
+    {# Contenido de la página con tus componentes #}
+    ...
+    {% component_js_dependencies %}  {# <- Para el JS, usualmente antes de cerrar el <body> #}
+</body>
+</html>
 ```
 
-- El nombre debe coincidir con el archivo Svelte (en snake_case si así es la convención del proyecto).
-- Los props se pasan como JSON en el atributo `data-props`.
+---
+
+## 4. Integración con Frontend (Svelte, etc.)
+
+Para inicializar un componente de frontend (ej. Svelte) a partir de un componente de Django, usa atributos `data-*`.
+
+```html
+<div 
+    data-svelte-component="Calendar" 
+    data-props='{{ props_json }}'>
+</div>
+```
+
+**Mejor Práctica en Django:** Para pasar los `props` de forma segura como JSON, usa el tag `json_script`. Esto evita problemas con comillas y escapado de caracteres.
+
+```python
+# En calendar.py
+def get_context_data(self, date=None):
+    # ...
+    from django.utils.safestring import mark_safe
+    import json
+
+    props = {"initialDate": date or "..."}
+    return {
+        "date": props["initialDate"],
+        "props_json": mark_safe(json.dumps(props)) # Forma segura
+    }
+```
+O de forma aún más segura en la plantilla:
+```django
+{# En la plantilla que renderiza el componente Svelte #}
+{{ my_dict_de_props|json_script:"props-for-calendar" }}
+<div data-svelte-component="Calendar" data-props-id="props-for-calendar">...</div>
+```
+Y en JS, lees los datos del script tag.
 
 ---
-Esta regla es obligatoria para todos los templates y componentes del proyecto.
 
+## 5. Documentación Oficial
 
+Para funcionalidades avanzadas (slots, provide/inject, etc.), consulta siempre la documentación oficial.
 
-
-
-
+-   **Documentación de `django-components`:** [https://django-components.github.io/django-components/](mdc:https:/django-components.github.io/django-components)
