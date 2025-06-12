@@ -8,6 +8,8 @@ urlpatterns = [
     path('', home, name='root_home'),
     path('core/', include('core.urls')),
     path('admin/', admin.site.urls),
+    # Django components URLs
+    path("", include("django_components.urls")),
 ]
 
 if settings.IS_LOCAL:

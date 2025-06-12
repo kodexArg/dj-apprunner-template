@@ -10,3 +10,10 @@ class CoreConfig(AppConfig):
     """
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'core'
+
+    def ready(self):
+        """Importar componentes para registrarlos"""
+        try:
+            from components.core.ping import ping
+        except ImportError:
+            pass

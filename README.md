@@ -7,6 +7,7 @@ Incluye:
 - Vite + django-vite
 - Tailwind CSS v4
 - HTMX + django-htmx
+- django-components
 
 
 ## 📋 Estado del Proyecto
@@ -34,7 +35,11 @@ Incluye:
 - [x] Desarrollo local con Vite (npm run dev)
 - [x] Configuración de Tailwind CSS v4
 - [x] Integración de HTMX
-- [ ] Implementación de componentes Django
+- [x] **Implementación de django-components** ✅
+  - [x] Configuración completa en settings.py
+  - [x] Componente de prueba "ping" funcional
+  - [x] Estructura de archivos optimizada
+  - [x] CSS/JS específicos por componente
 
 > **Nota Técnica:** El stack frontend está diseñado para ser completamente autónomo en producción. Todos los assets (JS, CSS, imágenes) se sirven desde S3/CloudFront, sin dependencias de CDNs externos. HTMX, Vite, Tailwind y django-components funcionan 100% offline una vez desplegados.
 
@@ -69,6 +74,10 @@ npm install
 
 2. Iniciar servidor de desarrollo:
 ```bash
+# Opción recomendada: Script integrado (Windows)
+.\scripts\dev.ps1
+
+# O manualmente en terminales separadas:
 # Terminal 1: Backend Django
 python manage.py runserver
 
@@ -195,7 +204,7 @@ Se requieren los siguientes secretos en AWS Secrets Manager:
 </pre>
 </details>
 
-> **NOTA:** El home (`/`) ahora incluye un Dashboard de Verificación Tecnológica que muestra en tiempo real el estado de cada tecnología del stack. Si ves las 6 tecnologías marcadas como activas (Django, Vite, Tailwind, django-vite, viteStaticCopy, PostgreSQL), la configuración es exitosa.
+> **NOTA:** El home (`/`) ahora incluye un Dashboard de Verificación Tecnológica que muestra en tiempo real el estado de cada tecnología del stack. Si ves las 4 tecnologías marcadas como activas (Vite, Tailwind, HTMX, Components), la configuración es exitosa. El componente "ping" demuestra la funcionalidad completa de django-components con CSS/JS integrados.
 
 ## Licencia
 

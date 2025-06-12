@@ -5,6 +5,7 @@ from loguru import logger
 import sys
 from datetime import datetime
 from dotenv import load_dotenv
+from django_components import ComponentsSettings
 
 # Cargar variables de entorno desde .env
 load_dotenv(override=True)
@@ -96,16 +97,27 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR / 'components',
             BASE_DIR / 'templates',
         ],
-        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'builtins': [
+                'django_components.templatetags.component_tags',
+            ],
+            'loaders': [(
+                'django.template.loaders.cached.Loader', [
+                    # Loader por defecto de Django
+                    'django.template.loaders.filesystem.Loader',
+                    # Incluir esto es equivalente a APP_DIRS=True
+                    'django.template.loaders.app_directories.Loader',
+                    # Loader de componentes
+                    'django_components.template_loader.Loader',
+                ]
+            )],
         },
     },
 ]
@@ -158,8 +170,16 @@ AWS_S3_OBJECT_PARAMETERS = json.loads(os.environ.get('AWS_S3_OBJECT_PARAMETERS',
 AWS_S3_SIGNATURE_VERSION = 's3v4'
 AWS_S3_VERIFY = True
 
-# Static & Media Files
+# Archivos estáticos y multimedia
 VITE_ASSETS_PATH = BASE_DIR / "static" / "dist"
+
+STATICFILES_FINDERS = [
+    # Buscadores por defecto
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    # Buscador de componentes Django
+    "django_components.finders.ComponentsFileSystemFinder",
+]
 
 STATICFILES_DIRS = [
     VITE_ASSETS_PATH,
@@ -187,7 +207,7 @@ if IS_LOCAL:
     }
 else:
     if not all([AWS_STORAGE_BUCKET_NAME, AWS_S3_REGION_NAME, AWS_S3_CUSTOM_DOMAIN]):
-        logger.warning("S3 settings are incomplete.")
+        logger.warning("Configuración de S3 incompleta.")
     STORAGES = {
         "default": {
             "BACKEND": "storages.backends.s3.S3Storage",
@@ -211,11 +231,12 @@ else:
     STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
     MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
 
-# Test Runner
+# Ejecutor de pruebas
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
-DJANGO_COMPONENTS = {
-    "components": [
-        str(BASE_DIR / "components"),
-    ]
-}
+# Configuración de django-components según documentación oficial
+COMPONENTS = ComponentsSettings(
+    dirs=[
+        BASE_DIR / "components",
+    ],
+)

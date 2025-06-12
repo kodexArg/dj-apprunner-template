@@ -3,180 +3,153 @@ description: componente, component, widget, reutilizable, partial, bloque, módu
 globs: 
 alwaysApply: false
 ---
-# Guía para Componentes django-components
+# Guía para Crear Componentes django-components
 
-Este documento establece las convenciones y mejores prácticas para crear y utilizar componentes con `django-components`. Su seguimiento es **obligatorio**.
+Este documento establece el procedimiento exacto para crear nuevos componentes con `django-components`. Su seguimiento es **obligatorio**.
 
-## Principios Fundamentales
+## Estructura de Archivos
 
-1. **Ubicación de todos los componentes** Los componentes siempre se ubican en la carpeta (root)/components, nunca dentro de la carpeta de aplicación.
-2. **Path preciso** Los componentes para todo este proyecto se ubican en la carpeta (root)/components/global/ y los componentes de cada aplicación dentro de su propia carpeta (root)/components/{app}/*
-3.  **Auto-descubrimiento:** Los componentes **NO** se registran manualmente con `@register`. El sistema los descubre automáticamente gracias a la configuración en `settings.py`.
-4.  **Convención de Nomenclatura:** La ruta del archivo determina el nombre del componente. La ruta `components/core/calendar` se convierte en el nombre de componente `core_calendar`.
-5.  **Estructura Encapsulada:** Cada componente debe residir en su propio directorio para encapsular su plantilla, lógica, estilos y scripts.
+Cada componente debe seguir esta estructura exacta:
 
----
-
-## 1. Estructura de Archivos (La Regla de Oro)
-
-**Estructura Canónica:**
 ```
-/components/
-└── {nombre_de_la_app}/
-    └── {nombre_del_componente}/
-        ├── {nombre_del_componente}.html (Obligatorio)
-        ├── {nombre_del_componente}.py (Opcional, para la lógica)
-        ├── {nombre_del_componente}.css (Opcional, para estilos)
-        └── {nombre_del_componente}.js (Opcional, para scripts)
+components/
+├── core/                    # Componentes de la app 'core'
+│   └── nombre_componente/
+│       ├── nombre_componente.py
+│       ├── nombre_componente.html
+│       ├── nombre_componente.css
+│       └── nombre_componente.js
+└── global/                  # Componentes globales (futuro)
+    └── nombre_componente/
+        ├── nombre_componente.py
+        ├── nombre_componente.html
+        ├── nombre_componente.css
+        └── nombre_componente.js
 ```
 
-**Ejemplo Práctico (`core/calendar`):**
-```
-/components/
-└── core/
-    └── calendar/
-        ├── calendar.html
-        └── calendar.py
+## Procedimiento de Creación
+
+### 1. Crear Directorio
+```bash
+mkdir components/{app}/nombre_componente
 ```
 
--   **Nombre para usar en plantilla:** `core_calendar`
+### 2. Archivo Python (obligatorio)
+**Archivo**: `components/{app}/nombre_componente/nombre_componente.py`
 
----
-
-## 2. Creación de un Componente
-
-### a) La Plantilla (`.html`) - Lo Mínimo Requerido
-El archivo HTML es el corazón del componente.
-
-`/components/core/calendar/calendar.html`
-```html
-<div class="calendar" id="{{ component.id }}">
-  <h3>Calendario</h3>
-  <p>Fecha de hoy: <span>{{ date }}</span></p>
-</div>
-```
-
-### b) La Lógica (`.py`) - Para Datos y Comportamiento
-La clase Python se asocia automáticamente a la plantilla si está en el mismo directorio. **No uses `@register`**.
-
-`/components/core/calendar/calendar.py`
 ```python
-from django_components import Component
-import datetime
+from django_components import Component, register
 
-class Calendar(Component):
-    def get_context_data(self, date=None):
-        """
-        Define el contexto que se pasará a la plantilla HTML.
-        Los argumentos de esta función son los 'props' que recibe el componente.
-        """
-        return {
-            "date": date or datetime.date.today().isoformat()
-        }
-
-    # Anidar la clase Media para asociar CSS y JS específicos.
-    class Media:
-        css = "core/calendar/calendar.css"
-        js = "core/calendar/calendar.js"
-```
-
----
-
-## 3. Uso en Plantillas (Templates)
-
-Para usar un componente, primero carga la librería de tags.
-
-### a) Sintaxis de Invocación
-
--   **Componente sin contenido interno (Self-Closing):**
-    Observa la barra `/` al final. Se usa cuando no necesitas pasar contenido dentro del bloque.
-
-    ```django
-    {% load component_tags %}
-
-    {# Llama al componente sin pasarle props (usará el valor por defecto de get_context_data) #}
-    {% component "core_calendar" / %}
-
-    {# Llama al componente pasándole un 'prop' de fecha #}
-    {% component "core_calendar" date="2025-01-31" / %}
-    ```
-
--   **Componente con contenido interno (Bloque con `slots`):**
-    Se usa para construir componentes más complejos que actúan como "contenedores" o "layouts".
-
-    ```django
-    {% load component_tags %}
+@register("nombre_componente")
+class NombreComponente(Component):
+    template_name = "nombre_componente.html"
     
-    {% component "card" title="Mi Tarjeta" %}
-        {% fill "header" %}
-            <h1>{{ title }}</h1>
-        {% endfill %}
-
-        <p>Este es el contenido principal de la tarjeta.</p>
-    {% endcomponent %}
-    ```
-
-### b) Carga de Dependencias CSS/JS
-
-Para que los archivos CSS y JS definidos en la clase `Media` del componente se carguen, debes incluir estos tags en tu plantilla base:
-
-```django
-{% load component_tags %}
-
-<html>
-<head>
-    ...
-    {% component_css_dependencies %} {# <- Para el CSS, usualmente en el <head> #}
-</head>
-<body>
-    ...
-    {# Contenido de la página con tus componentes #}
-    ...
-    {% component_js_dependencies %}  {# <- Para el JS, usualmente antes de cerrar el <body> #}
-</body>
-</html>
+    def get_context_data(self, **kwargs):
+        """Procesa los parámetros y devuelve el contexto para el template"""
+        return {
+            "parametro": kwargs.get("parametro", "valor_default"),
+            # Agregar más parámetros según necesidad
+        }
+    
+    class Media:
+        css = ["nombre_componente.css"]
+        js = ["nombre_componente.js"]
 ```
 
----
-
-## 4. Integración con Frontend (Svelte, etc.)
-
-Para inicializar un componente de frontend (ej. Svelte) a partir de un componente de Django, usa atributos `data-*`.
+### 3. Template HTML (obligatorio)
+**Archivo**: `components/{app}/nombre_componente/nombre_componente.html`
 
 ```html
-<div 
-    data-svelte-component="Calendar" 
-    data-props='{{ props_json }}'>
+<div class="nombre-componente">
+    <!-- Contenido del componente -->
+    <p>{{ parametro }}</p>
 </div>
 ```
 
-**Mejor Práctica en Django:** Para pasar los `props` de forma segura como JSON, usa el tag `json_script`. Esto evita problemas con comillas y escapado de caracteres.
+### 4. Estilos CSS (opcional)
+**Archivo**: `components/{app}/nombre_componente/nombre_componente.css`
+
+```css
+.nombre-componente {
+    /* Estilos específicos del componente */
+}
+```
+
+### 5. JavaScript (opcional)
+**Archivo**: `components/{app}/nombre_componente/nombre_componente.js`
+
+```javascript
+// JavaScript específico del componente
+function nombreComponenteFunction() {
+    // Lógica del componente
+}
+```
+
+### 6. Registro en apps.py
+**Archivo**: `{app}/apps.py`
 
 ```python
-# En calendar.py
-def get_context_data(self, date=None):
-    # ...
-    from django.utils.safestring import mark_safe
-    import json
+from django.apps import AppConfig
 
-    props = {"initialDate": date or "..."}
-    return {
-        "date": props["initialDate"],
-        "props_json": mark_safe(json.dumps(props)) # Forma segura
-    }
+class CoreConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'core'
+    
+    def ready(self):
+        """Importar componentes para asegurar su registro"""
+        from components.core.nombre_componente import nombre_componente  # noqa
 ```
-O de forma aún más segura en la plantilla:
-```django
-{# En la plantilla que renderiza el componente Svelte #}
-{{ my_dict_de_props|json_script:"props-for-calendar" }}
-<div data-svelte-component="Calendar" data-props-id="props-for-calendar">...</div>
+
+## Uso en Templates
+
+```html
+<!-- Uso básico -->
+{% component "nombre_componente" / %}
+
+<!-- Con parámetros -->
+{% component "nombre_componente" parametro="valor" otro_param="otro_valor" / %}
 ```
-Y en JS, lees los datos del script tag.
 
----
+## Reglas Obligatorias
 
-## 5. Documentación Oficial
+1. **Registro**: Siempre usar `@register("nombre_componente")`
+2. **Nomenclatura**: Archivos y clases deben coincidir con el nombre del directorio
+3. **Ubicación**: Componentes van en `components/{app}/` nunca dentro de la app
+4. **Importación**: Agregar importación en `apps.py` del app correspondiente
+5. **Métodos**: Usar `get_context_data()` para procesar parámetros
+6. **Template**: Usar `template_name` no `template_file`
+7. **Media**: Listas `["archivo.css"]` no strings `"archivo.css"`
 
-Para funcionalidades avanzadas (slots, provide/inject, etc.), consulta siempre la documentación oficial.
+## Ejemplo Completo: Componente "ping"
 
--   **Documentación de `django-components`:** [https://django-components.github.io/django-components/](mdc:https:/django-components.github.io/django-components)
+**Estructura**:
+```
+components/core/ping/
+├── ping.py
+├── ping.html
+├── ping.css
+└── ping.js
+```
+
+**ping.py**:
+```python
+from django_components import Component, register
+
+@register("ping")
+class Ping(Component):
+    template_name = "ping.html"
+    
+    def get_context_data(self, ping=None, **kwargs):
+        return {
+            "response": "PONG" if ping else "No ping received"
+        }
+    
+    class Media:
+        css = ["ping.css"]
+        js = ["ping.js"]
+```
+
+**Uso**:
+```html
+{% component "ping" ping="test_ping" / %}
+```
